@@ -1,10 +1,15 @@
 package scubaLive;
 
+
+import javafx.util.Pair;
+
 public class DiveTable {
 
 	private static int[][] divet;
 	
 	public DiveTable() {
+		
+		//dive table, 1st row is depths for columns, last row is index from which safety stops are required
 		divet = new int[][]{
 				{10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40, 42},
 				{10, 9, 8, 7, 6, 6, 5, 4, 3, 3, -1, -1},
@@ -77,21 +82,28 @@ public class DiveTable {
 		return index;
 	}
 	
+	private Pair<Integer, Integer> offSet(char spg, int depth) {
+		int ioffset = pgToIndex(spg);
+		int toffset = 0;
+		
+		if(ioffset != 0) toffset = divet[ioffset][depthIndex(depth)];
+		
+		return new Pair<Integer, Integer>(ioffset, toffset);
+	}
+	
 	
 	public char diveFPG(char spg, int depth, int bottomt) {
 		int indexd = 0;
 		int indext = 1;
-		int ioffset = pgToIndex(spg);
-		int toffset = 0;
+		Pair<Integer, Integer> offset = offSet(spg, depth);
+		int ioffset = (int) offset.getKey();
+		int toffset = (int) offset.getValue();
 		char fpg = 'a';
 		
 		if( ioffset >= 0 && ioffset <= 26) {
 			//find correct depth column 
 			indexd = depthIndex(depth);
-			
-			//effective time offset for spg
-			if(ioffset != 0) toffset = divet[ioffset][indexd];
-			
+
 			//find pg for given bottom time
 			indext = timeIndex(bottomt + toffset, indexd);
 			
@@ -102,14 +114,18 @@ public class DiveTable {
 		
 	}
 
-	public int maxBT(int depth) {
+	public int maxBT(char spg, int depth) {
 		int indexd = depthIndex(depth);
 		int indext = 1;
+		Pair<Integer, Integer> offset = offSet(spg, depth);
+		int toffset = (int) offset.getValue();
 		int length = indexd + 1;
 
-		for(; divet[indext].length < length; indext++);
+
+		for(; divet[indext].length >= length; indext++);
+		indext = indext -1;
 		
-		return divet[indext][indexd];
+		return divet[indext][indexd] - toffset;
 	}
 
 }
