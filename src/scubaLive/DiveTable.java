@@ -5,6 +5,14 @@ import javafx.util.Pair;
 
 public class DiveTable {
 
+	//Pressure group 'a' is a pre-dive state
+	//Indices for time and pressure are 1 to 26, 0 and 27 are for calculation purposes
+	//Indices for depth are 0 to 11 
+	//Expects depths between 0 and 40meters
+	//Expects positive time in minutes only
+	//Expects pressure groups A-Z and 'a'
+	//Input validation to be done with UI
+	
 	private static int[][] divet;
 	
 	public DiveTable() {
@@ -114,6 +122,7 @@ public class DiveTable {
 		
 	}
 
+	//Returns maximum bottom time from starting pressure group at a certain depth
 	public int maxBT(char spg, int depth) {
 		int indexd = depthIndex(depth);
 		int indext = 1;
