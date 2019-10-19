@@ -41,20 +41,15 @@ public class Table {
 	
 	public char getEndingPressureGroup(char startingPressureGroup, int surfaceIntervalTime) {
 		char endingPressureGroup = 0;
-		System.out.println(startingPressureGroup);
 		int startPg = startingPressureGroup - 65;
-		System.out.println(startPg);
-		System.out.println((char) (startPg+65));
 		for (int i = 0; i < this.padi[startPg].length; i++) {
 			if (this.padi[startPg][i] >= surfaceIntervalTime) {
-				System.out.println(i);
 				i = (int) Math.ceil((double)i/2.0);
-//				i--;
-				System.out.println(i);
+				if (i > startPg) {
+					i = i -1;					
+				}
 				startPg = startPg - i;
-				System.out.println((char) startPg);
 				startPg = startPg + 65;
-				System.out.println((char) startPg);
 				endingPressureGroup = (char) startPg;
 				return endingPressureGroup;
 			}
@@ -62,11 +57,18 @@ public class Table {
 		return endingPressureGroup;
 	}
 	
-	public int getSurfaceIntervalTime(char startPg, char endPg) {
-		int surfTime;
+	public int[] getSurfaceIntervalTime(char startPg, char endPg) {
+		int [] surfTime = new int[2];
 		int start = startPg - 65;
 		int end = endPg - 65;
-		return 1;
+		int indexFirst = start * 2;
+//		start = start - 1;
+		end = end * 2;
+		int index = indexFirst - end;
+//		index = index + 1;
+		surfTime[0] = this.padi[start][index];
+		surfTime[1] = this.padi[start][index+1];
+		return surfTime;
 	}
 	
 }
