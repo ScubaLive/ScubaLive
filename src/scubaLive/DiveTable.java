@@ -46,7 +46,7 @@ public class DiveTable {
 				{178, 125, 92, 72},
 				{199, 134, 98},
 				{219, 147},
-				{22, 22, 21, 20, 19, 17, 15, 13, 0, 0, 0, 0}
+				{22, 22, 21, 20, 19, 17, 15, 13, 10, 7, 3, 2}
 		};
 	}
 	
@@ -135,6 +135,46 @@ public class DiveTable {
 		indext = indext -1;
 		
 		return divet[indext][indexd] - toffset;
+	}
+	
+	public char minPG(int time, int depth) {
+		int dindex = depthIndex(depth);
+		int maxt = divet[divet[27][dindex] + 4][dindex];
+		int tdiff = maxt - time;
+		
+		char spg = indexToPG(timeIndex(tdiff, dindex) - 1);
+		
+		return spg;
+		
+	}
+	
+	public int maxDepth(int time, char spg) {
+		int indext = pgToIndex(spg);
+		int indexd = 11;
+		
+		//skip depths in which dives from spg arent allowed
+		while (divet[27][indexd] + 4 < indext) 
+			indexd--;
+
+		//find depth which allows for BT at certain spg
+		while(divet[divet[27][indexd]+4][indexd] < time + divet[indext][indexd])
+			indexd--;
+		
+		return divet[0][indexd];
+		
+	}
+	
+	public boolean ssTest(char finalpg, int depth) {
+		boolean ssrequired = false;
+		int pgindex = pgToIndex(finalpg);
+		int dindex = depthIndex(depth);
+		
+		if(pgindex >= 1 && pgindex <= 26) {
+			if(pgindex > divet[27][dindex]) ssrequired = true;
+			if( depth > 25) ssrequired = true;
+		}
+		
+		return ssrequired;
 	}
 
 }

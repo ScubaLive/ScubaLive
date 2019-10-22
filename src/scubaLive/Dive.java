@@ -2,45 +2,88 @@ package scubaLive;
 
 public class Dive {
 	
-	private Plan planref;
+	private DiveTable dtable;
 	private int bottomt;
-	private int depth;
-	private int ndepth;
+	private int ddepth;
 	private char spg;
 	private char fpg;
 	private boolean ssrequired;
 	private boolean safe;
 
-	public Dive(Plan plan) {
-		this.planRef = plan;
+	public Dive(DiveTable divt, SurfaceTable surft) {
+		this.dtable = divt;
 		bottomt = 0;
-		depth = 0;
-		ndepth = 0;
+		ddepth = 0;
 		spg = 'a';
 		fpg = 'a';
 		ssrequired = false;
 		safe = true;
 	}
 	
-	public int[] updateDive(int time, int depth) {
+	public int[] updateDive(int time, int depth, char startpg) {
+		int maxbt = dtable.maxBT(startpg, depth);
+		int[] result = new int[]{time, depth, (int) startpg, (int) 'a', 0, 1};
+		
+		bottomt = time;
+		ddepth = depth;
+		spg = startpg;
+		result [2] = startpg;
+		
+		//If time requested is past the maximum bottom time at depth & spg set return array to carry user recomendations for UI warnings
+		if (maxbt < time) {
+			safe = false;
+			result[0] = maxbt;
+			result[1] = dtable.maxDepth(time, startpg);
+			result[5] = 0;
+			// find new spg if possible
+			if(startpg != 'a') {
+				if (dtable.maxBT('a', depth) > time) {
+					result[2] = dtable.minPG(time, depth);
+					result[3] = dtable.diveFPG((char) result[2], depth, time);
+					result[4] = dtable.ssTest((char) result[3], depth) ? 1 : 0;
+				}
+			}
+		}
+		else {
+			fpg = dtable.diveFPG(startpg, depth, time);
+			result[4] = fpg;
+			ssrequired = dtable.ssTest(fpg, depth);
+			result[5] = ssrequired ? 1 : 0;
+		} 
+		
+		return result;
 		
 		
 	}
 	
 	public boolean isSafe() {
-		
+		return safe;
 	}
 	
-	private int[] recommend() {
-		
+	public int getBT() {
+		return bottomt;
 	}
 	
-	private int timeAtDepth(char pg) {
-		
-	}
-
-	private int depthAtTime(char pg) {
-		
+	public int getDepth() {
+		return ddepth;
 	}
 	
+	public char getSPG() {
+		return spg;
+	}
+	
+	public char getFPG() {
+		return fpg;
+	}
+	
+	public boolean getSS() {
+		return ssrequired;
+	}
+	
+	@Override
+	public String toString() {
+		String output = new String();
+		
+		return output;
+	}
 }
