@@ -1,8 +1,6 @@
 package scubaLive;
 
 
-import javafx.util.Pair;
-
 public class DiveTable {
 
 	//Pressure group 'a' is a pre-dive state
@@ -90,22 +88,22 @@ public class DiveTable {
 		return index;
 	}
 	
-	private Pair<Integer, Integer> offSet(char spg, int depth) {
+	private int[] offSet(char spg, int depth) {
 		int ioffset = pgToIndex(spg);
 		int toffset = 0;
 		
 		if(ioffset != 0) toffset = divet[ioffset][depthIndex(depth)];
 		
-		return new Pair<Integer, Integer>(ioffset, toffset);
+		return new int[] {ioffset, toffset};
 	}
 	
 	
 	public char diveFPG(char spg, int depth, int bottomt) {
 		int indexd = 0;
 		int indext = 1;
-		Pair<Integer, Integer> offset = offSet(spg, depth);
-		int ioffset = (int) offset.getKey();
-		int toffset = (int) offset.getValue();
+		int[] offset = offSet(spg, depth);
+		int ioffset = offset[0];
+		int toffset = offset[1];
 		char fpg = 'a';
 		
 		if( ioffset >= 0 && ioffset <= 26) {
@@ -116,7 +114,7 @@ public class DiveTable {
 			indext = timeIndex(bottomt + toffset, indexd);
 			
 			fpg = indexToPG(indext);
-		}		
+		}
 
 		return fpg; 
 		
@@ -126,8 +124,8 @@ public class DiveTable {
 	public int maxBT(char spg, int depth) {
 		int indexd = depthIndex(depth);
 		int indext = 1;
-		Pair<Integer, Integer> offset = offSet(spg, depth);
-		int toffset = (int) offset.getValue();
+		int[] offset = offSet(spg, depth);
+		int toffset = offset[1];
 		int length = indexd + 1;
 
 
@@ -152,7 +150,7 @@ public class DiveTable {
 		int indext = pgToIndex(spg);
 		int indexd = 11;
 		
-		//skip depths in which dives from spg arent allowed
+		//skip depths in which dives from spg aren't allowed
 		while (divet[27][indexd] + 4 < indext) 
 			indexd--;
 

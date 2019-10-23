@@ -9,6 +9,7 @@ public class Dive {
 	private char fpg;
 	private boolean ssrequired;
 	private boolean safe;
+	public int[] result;
 
 	public Dive(DiveTable divt, SurfaceTable surft) {
 		this.dtable = divt;
@@ -18,16 +19,17 @@ public class Dive {
 		fpg = 'a';
 		ssrequired = false;
 		safe = true;
+		result = null;
 	}
 	
-	public int[] updateDive(int time, int depth, char startpg) {
+	public void updateDive(int time, int depth, char startpg) {
 		int maxbt = dtable.maxBT(startpg, depth);
-		int[] result = new int[]{time, depth, (int) startpg, (int) 'a', 0, 1};
+		result = new int[]{time, depth, (int) startpg, (int) 'a', 0, 1};
 		
 		bottomt = time;
 		ddepth = depth;
 		spg = startpg;
-		result [2] = startpg;
+		this.result [2] = startpg;
 		
 		//If time requested is past the maximum bottom time at depth & spg set return array to carry user recomendations for UI warnings
 		if (maxbt < time) {
@@ -46,13 +48,42 @@ public class Dive {
 		}
 		else {
 			fpg = dtable.diveFPG(startpg, depth, time);
-			result[4] = fpg;
+			result[3] = fpg;
 			ssrequired = dtable.ssTest(fpg, depth);
-			result[5] = ssrequired ? 1 : 0;
+			result[4] = ssrequired ? 1 : 0;
 		} 
 		
-		return result;
+	}
+	
+	public void updateDive(char startpg) {
+		int maxbt = dtable.maxBT(startpg, ddepth);
+		result = new int[]{bottomt, ddepth, (int) startpg, (int) 'a', 0, 1};
 		
+		spg = startpg;
+		result [2] = startpg;
+		
+		//If time requested is past the maximum bottom time at depth & spg set return array to carry user recomendations for UI warnings
+		if (maxbt < bottomt) {
+			safe = false;
+			result[0] = maxbt;
+			result[1] = dtable.maxDepth(bottomt, startpg);
+			result[5] = 0;
+			// find new spg if possible
+			if(startpg != 'a') {
+				if (dtable.maxBT('a', ddepth) > bottomt) {
+					result[2] = dtable.minPG(bottomt, ddepth);
+					result[3] = dtable.diveFPG((char) result[2], ddepth, bottomt);
+					result[4] = dtable.ssTest((char) result[3], ddepth) ? 1 : 0;
+				}
+			}
+		}
+		else {
+			fpg = dtable.diveFPG(startpg, ddepth, bottomt);
+			safe = true;
+			result[3] = fpg;
+			ssrequired = dtable.ssTest(fpg, ddepth);
+			result[4] = ssrequired ? 1 : 0;
+		} 
 		
 	}
 	
@@ -76,6 +107,10 @@ public class Dive {
 		return fpg;
 	}
 	
+	public char getMPG() {
+		return dtable.minPG(bottomt, ddepth);
+	}
+	
 	public boolean getSS() {
 		return ssrequired;
 	}
@@ -85,5 +120,9 @@ public class Dive {
 		String output = new String();
 		
 		return output;
+	}
+	
+	public void draw() {
+		
 	}
 }
