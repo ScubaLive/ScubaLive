@@ -2,11 +2,11 @@ package scubaLive;
 
 import java.lang.*;
 
-public class Table {
+public class PadiTable {
 	
 	int[][] padi;
 
-	public Table() {
+	public PadiTable() {
 		// TODO Auto-generated constructor stub
 		int[][] table = {
 				{0,180},

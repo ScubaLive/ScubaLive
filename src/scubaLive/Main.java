@@ -4,7 +4,7 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		Table table = new Table();
+		PadiTable table = new PadiTable();
 
 		char endPg = table.getEndingPressureGroup('E', 100);
 		System.out.println("end "+endPg);
