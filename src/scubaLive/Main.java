@@ -12,6 +12,10 @@ public class Main {
 		Plan plan1 = new Plan(divetable, surftable);
 		int Choice;
 		boolean run = true;
+		
+		System.out.println("---------------------WARNING--------------------");
+		System.out.println("*THIS IS A PROTOTYPE DO NOT USE FOR REAL DIVES!*");
+		System.out.println("---------------PROCEED W/ CAUTION---------------\n");
 
 		while(run) {
 			System.out.println("-----------------------------------------");
@@ -24,7 +28,7 @@ public class Main {
 //	        for(int i = 5; i < plan1.getNum() + 5; i++) {
 //	        	System.out.println("" + i + ". Modify Dive " + (i-4));
 //	        }
-	        System.out.println ( "Any other number will exit the program");
+	        System.out.println ( "6. Exit the program");
 	        System.out.println("-----------------------------------------");
 	        System.out.println ( "\nEnter the number to the corresponding action you want to perform:" );
 	        Choice = input.nextInt();
@@ -43,7 +47,7 @@ public class Main {
 	        	
 	        	System.out.println("Enter the Bottom Time (minutes):\n");
 	        	do {
-	        	    System.out.println("Please the corresponding action!");
+//	        	    System.out.println("Please the corresponding action!");
 	        	    while (!input.hasNextInt()) {
 	        	        System.out.println("Error, Enter a Positive Integer");
 	        	        input.next();
@@ -51,23 +55,24 @@ public class Main {
 	        	    entered = input.nextInt();
 	        	} while (entered <= 0);
 	        	bottomTime = entered;
-//	            System.out.println("Enter the Maximum Dive Depth (meters): ");
+	            System.out.println("Enter the Maximum Dive Depth (meters): ");
 //	            entered = input.nextInt();
 //	            while (entered <= 0 | entered > 40){
 //	     	       System.out.println("Error, Enter a Number Between 0 and 40");
 //	     	       entered = input.nextInt();
 //	            }
-	            do {
-	        	    System.out.println("Enter the Maximum Dive Depth (meters): ");
-	        	    while (!input.hasNextInt()) {
-	        	        System.out.println("Error, Enter a Number Between 0 and 40");
-	        	        input.next();
-	        	    }
-	        	    entered = input.nextInt();
-	        	} while (entered < 0 | entered > 40);
-	            diveDepth = entered;
+//	            do {
+//	        	    System.out.println("Enter the Maximum Dive Depth (meters): ");
+//	        	    while (!input.hasNextInt()) {
+//	        	        System.out.println("Error, Enter a Number Between 0 and 40");
+//	        	        input.next();
+//	        	    }
+//	        	    entered = input.nextInt();
+//	        	} while (entered < 0 | entered > 40);
+	            diveDepth = getInputInt(input, 40);
 	            plan1.updateDive(plan1.getNum(), bottomTime, diveDepth);
 	            System.out.println(plan1.toString());
+	            break;
 	            
 	        case 2:
 	        	int diveNum;
@@ -104,6 +109,7 @@ public class Main {
 	        	} while (entered < 0 | entered > 40);
 	            diveDepth = entered;
 	            plan1.updateDive(diveNum, bottomTime, diveDepth);
+	            break;
 	        	
 	        case 3:
 	        	System.out.println("Select Which Dive to Plan");
@@ -119,6 +125,7 @@ public class Main {
 	        	    entered = input.nextInt();
 	        	} while (entered <= 0 & entered >= plan1.getNum());
 	        	System.out.println(plan1.diveString(entered));
+	        	break;
 	        	
 	        case 4:
 	        	do {
@@ -130,28 +137,39 @@ public class Main {
 	        	    entered = input.nextInt();
 	        	} while (entered < 0 & entered > 3); 
 	        	plan1.updateNum(entered);
+	        	break;
 	        	
 	        case 5:
 	        	System.out.println(plan1.toString());
+	        	break;
+	        	
+	        case 6:
+	        	System.out.println("--------------------REMINDER--------------------");
+	        	System.out.println("*THIS IS A PROTOTYPE DO NOT USE FOR REAL DIVES!*");
+	        	System.out.println("--------------------THANK YOU-------------------");
+	        	run = false;
+	        	break;
 	        }
 	        
 		}
 		
-		
-
-//		SurfaceTable table = new SurfaceTable();
-//		DiveTable divet = new DiveTable();
-//		Dive dive1 = new Dive(divet, table);
-//		System.out.println(dive1.toString());
-//		
-//
-//		char endPg = table.getEndingPressureGroup('E', 100);
-//		System.out.println("end "+endPg);
-//		endPg = table.getEndingPressureGroup('X', 6);
-//		System.out.println("end "+endPg);
-//		int [] surfTime = table.getSurfaceIntervalTime('Y', 'A');
-//		for (int i = 0; i < surfTime.length; i++) {
-//			System.out.println("surf "+surfTime[i]);
-		}
 	}
+	
+	public static int getInputInt(Scanner in, int range) {
+	    while (in.hasNext()) {
+	        if (in.hasNextInt()) {
+	            int val = in.nextInt();
+	            if (val >= 0 && val < range) { // <-- from "0" to "range".
+	                return val;
+	            } else {
+	            	System.out.println("Error, Enter a Number Between 0 and 40");
+	            }
+	        } else {
+	        	System.out.println("Error, Enter a Valid Number");
+	            in.next();
+	        }
+	    }
+	    return -1;
+	}
+}
 
