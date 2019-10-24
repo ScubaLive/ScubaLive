@@ -17,7 +17,7 @@ public class Plan {
 	public Plan(DiveTable dtable, SurfaceTable stable) {
 		divet = dtable;
 		surfacet = stable;
-		dive1 = new Dive(divet, surfacet);
+		dive1 = new Dive(divet, surfacet, 1);
 		numdives = 1;
 		dive2 = null;
 		dive3 = null;
@@ -38,13 +38,13 @@ public class Plan {
 					numdives++;
 					if (numdives == 2) {
 						if (dive2 == null) {
-							dive2 = new Dive(divet, surfacet);
+							dive2 = new Dive(divet, surfacet, 2);
 							si1 = new SurfaceInterval(dive1, dive2, surfacet);
 						}
 					}
 					if (numdives == 3) {
 						if (dive3 == null) {
-							dive3 = new Dive(divet, surfacet);
+							dive3 = new Dive(divet, surfacet, 3);
 							si2 = new SurfaceInterval(dive2, dive3, surfacet);
 						}
 						
@@ -69,22 +69,27 @@ public class Plan {
 		
 	}
 	
-	public void updateDive(int diveid, int time, int depth, char spg) {
+	public void updateDive(int diveid, int time, int depth) {
 		Dive dive = null;
+		char spg = 'a';
 		SurfaceInterval si = null;
 		
-		if (diveid > 0 && diveid < 4) {
+		if (diveid > 0 && diveid < 4 && diveid <= numdives) {
 			if (diveid == 1) {
 				dive = dive1;
 				if (numdives > 1) si = si1;
 			}
 			if (diveid == 2) {
 				dive = dive2;
+				spg = si1.getFPG();
 				if (numdives == 3) si = si2;
 			}
-			if (diveid == 3) dive = dive3;	
+			if (diveid == 3) {
+				dive = dive3;
+				spg = si2.getFPG();
+			}
 			dive.updateDive(time, depth, spg);
-			si.updateInterval();
+			if (si != null) si.updateInterval();
 			
 			this.updateSafe();
 			
@@ -96,6 +101,7 @@ public class Plan {
 		
 	}
 	
+	// call with negative time for min surface interval
 	public void updateSI(int siid, int time) {
 		SurfaceInterval si = null;
 		
@@ -105,6 +111,7 @@ public class Plan {
 			if (siid == 2) si = si2;
 			si.updateInterval(time);
 			if (time < 0) si.setMinInterval();
+			if (siid == 1 && si2 != null) si2.updateInterval();
 			
 		} else {
 			
@@ -143,9 +150,32 @@ public class Plan {
 		return string;
 	}
 	
-	@Override 
+	
+	public String diveString(int diveid) {
+		String string = null;
+		
+		if (diveid == 1) string = dive1.toString();
+		if (diveid == 2) string = dive2.toString();
+		if (diveid == 3) string = dive3.toString();
+		
+		return string;
+	}
+	
+	@Override
 	public String toString() {
 		String string = null;
+		
+		if (numdives == 1) {
+			string = dive1.toString();
+		}
+		
+		if (numdives == 2) {
+			string = dive1.toString() + si1.toString() + dive2.toString();
+		}
+		
+		if (numdives == 3) {
+			string = dive1.toString() + si1.toString() + dive2.toString() + si2.toString() + dive3.toString();
+		}
 		
 		return string;
 	}

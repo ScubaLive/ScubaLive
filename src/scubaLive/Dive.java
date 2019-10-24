@@ -9,12 +9,14 @@ public class Dive {
 	private char fpg;
 	private boolean ssrequired;
 	private boolean safe;
+	private int diveid;
 	public int[] result;
 
-	public Dive(DiveTable divt, SurfaceTable surft) {
+	public Dive(DiveTable divt, SurfaceTable surft, int id) {
 		this.dtable = divt;
 		bottomt = 0;
 		ddepth = 0;
+		diveid = id;
 		spg = 'a';
 		fpg = 'a';
 		ssrequired = false;
@@ -115,10 +117,30 @@ public class Dive {
 		return ssrequired;
 	}
 	
+	public String getWarnings() {
+		String string = new String();
+		
+		if(safe) string = "Safe Dive\n";
+		else string = "Unsafe Dive, max bottom time at " + ddepth + "m" + " is " + result[0] + " minutes at starting pressure group " + spg + ".\n";
+		
+		return string;
+	}
+	
 	@Override
 	public String toString() {
-		String output = new String();
+		String output =  "*********Dive " + diveid + "*********\n";
 		
+		output = output + "Bottom Time = " + bottomt + ", Depth = " + ddepth + " SPG = " + spg + ", FPG = " + fpg +"\n";
+		output = output + this.getWarnings();
+		if(safe) {
+			if(ssrequired) {
+				output = output + "SS Required\n";
+			} else {
+				output = output + "SS not required, but always recommended.\n";
+			}
+		}
+		
+		output = output + "*********************\n";
 		return output;
 	}
 	

@@ -126,13 +126,10 @@ public class DiveTable {
 		int indext = 1;
 		int[] offset = offSet(spg, depth);
 		int toffset = offset[1];
-		int length = indexd + 1;
+		int maxtindex = divet[27][indexd] + 4;
+		int maxtime = divet[maxtindex][indexd];
 
-
-		for(; divet[indext].length >= length; indext++);
-		indext = indext -1;
-		
-		return divet[indext][indexd] - toffset;
+		return maxtime - toffset;
 	}
 	
 	public char minPG(int time, int depth) {

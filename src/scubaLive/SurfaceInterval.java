@@ -34,9 +34,9 @@ public class SurfaceInterval {
 		fdive.updateDive(fpg);
 	}
 	
-	public int setMinInterval () {
+	public void setMinInterval () {
 		interval = stable.getSurfaceIntervalTime(sdive.getFPG(), fdive.getMPG())[0];
-		return interval;
+		updateInterval();
 	}
 
 	public char getFPG() {
@@ -54,7 +54,7 @@ public class SurfaceInterval {
 	@Override
 	public String toString() {
 		String output = new String();
-		
+		output = "Stay on surface for " + interval + " minutes.\n";
 		return output;
 	}
 	
