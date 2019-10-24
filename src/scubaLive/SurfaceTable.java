@@ -45,10 +45,7 @@ public class SurfaceTable {
 		if(startingPressureGroup != 'a') {
 			for (int i = 0; i < this.padi[startPg].length; i++) {
 				if (this.padi[startPg][i] >= surfaceIntervalTime) {
-					i = (int) Math.ceil((double)i/2.0);
-					if (i > startPg) {
-						i = i -1;					
-					}
+					i = (int) Math.ceil((double)(i + 1)/2.0) - 1;
 					startPg = startPg - i;
 					startPg = startPg + 65;
 					endingPressureGroup = (char) startPg;

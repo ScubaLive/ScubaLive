@@ -3,7 +3,6 @@ package scubaLive;
 import java.util.Scanner;
 
 public class Main {
-
 	public static void main(String[] args) {
 		
 		Scanner input = new Scanner(System.in);
@@ -26,7 +25,8 @@ public class Main {
 	        System.out.println("4. Change the Number of Dives");
 	        System.out.println("5. Print Plan");
 	        System.out.println("6. Edit Surface Interval Time Between Dives");
-	        System.out.println ("7. Exit the program");
+	        System.out.println("7. Set Minimum Surface Interval Times Between Dives");
+	        System.out.println ("8. Exit the program");
 	        System.out.println("-----------------------------------------");
 	        System.out.println ( "\nEnter the number to the corresponding action you want to perform:" );
 	        Choice = input.nextInt();
@@ -43,7 +43,7 @@ public class Main {
 	        		plan1.updateNum(plan1.getNum() + 1);
 	        	}
 	        	
-	        	System.out.println("Enter the Bottom Time (minutes):\n");
+	        	System.out.print("Enter the Bottom Time (minutes): ");
 	        	do {
 	        	    while (!input.hasNextInt()) {
 	        	        System.out.println("Error, Enter a Positive Integer");
@@ -52,7 +52,7 @@ public class Main {
 	        	    entered = input.nextInt();
 	        	} while (entered <= 0);
 	        	bottomTime = entered;
-	            System.out.println("Enter the Maximum Dive Depth (meters): ");
+	            System.out.print("Enter the Maximum Dive Depth (meters): ");
 	            diveDepth = getInputInt(input, 40);
 	            plan1.updateDive(plan1.getNum(), bottomTime, diveDepth);
 	            System.out.println(plan1.toString());
@@ -73,7 +73,7 @@ public class Main {
 	        	    entered = input.nextInt();
 	        	} while (entered <= 0 & entered >= plan1.getNum());
 	        	diveNum = entered;
-	        	System.out.println("Enter the Bottom Time (minutes):");
+	        	System.out.print("Enter the Bottom Time (minutes): ");
 	        	do {
 	        	    while (!input.hasNextInt()) {
 	        	        System.out.println("Error, Enter a Positive Integer");
@@ -82,7 +82,7 @@ public class Main {
 	        	    entered = input.nextInt();
 	        	} while (entered <= 0);
 	        	bottomTime = entered;
-	        	System.out.println("Enter the Maximum Dive Depth (meters): ");
+	        	System.out.print("Enter the Maximum Dive Depth (meters): ");
 	            diveDepth = getInputInt(input, 40);
 	            plan1.updateDive(diveNum, bottomTime, diveDepth);
 	            break;
@@ -122,7 +122,7 @@ public class Main {
 	        case 6:
 	        	if(plan1.getNum() == 2) {
 	        		System.out.println("--------Surface Interval Time Between Dive 1 and 2--------");
-		        	System.out.println("Enter a Surface Interval Time (minutes): ");
+		        	System.out.print("Enter a Surface Interval Time (minutes): ");
 		        	do {
 		        	    while (!input.hasNextInt()) {
 		        	        System.out.println("Error, Enter a Positive Integer");
@@ -130,7 +130,7 @@ public class Main {
 		        	    }
 		        	    entered = input.nextInt();
 		        	} while (entered <= 0);
-		        	plan1.si1.updateInterval(entered);
+		        	plan1.updateSI(1, entered);
 		        } else if (plan1.getNum() == 3) {
 		        	System.out.println("1. Edit Surface Interval Time Between Dive 1 and 2");
 		        	System.out.println("2. Edit Surface Interval Time Between Dive 2 and 3");
@@ -144,7 +144,7 @@ public class Main {
 		        	} while (entered <= 0 & entered >= 3);
 		        	if(entered == 1) {
 		        		System.out.println("--------Surface Interval Time Between Dive 1 and 2--------");
-			        	System.out.println("Enter a Surface Interval Time (minutes): ");
+			        	System.out.print("Enter a Surface Interval Time (minutes): ");
 			        	do {
 			        	    while (!input.hasNextInt()) {
 			        	        System.out.println("Error, Enter a Positive Integer");
@@ -152,10 +152,10 @@ public class Main {
 			        	    }
 			        	    entered = input.nextInt();
 			        	} while (entered <= 0);
-			        	plan1.si1.updateInterval(entered);
+			        	plan1.updateSI(1, entered);
 		        	} else if(entered == 2) {
 		        		System.out.println("--------Surface Interval Time Between Dive 2 and 3--------");
-			        	System.out.println("Enter a Surface Interval Time (minutes): ");
+			        	System.out.print("Enter a Surface Interval Time (minutes): ");
 			        	do {
 			        	    while (!input.hasNextInt()) {
 			        	        System.out.println("Error, Enter a Positive Integer");
@@ -163,7 +163,7 @@ public class Main {
 			        	    }
 			        	    entered = input.nextInt();
 			        	} while (entered <= 0);
-			        	plan1.si2.updateInterval(entered);
+			        	plan1.updateSI(2, entered);
 		        	} else {
 		        		System.out.println("You did not enter a valid option. Try agian");
 		        	}
@@ -173,6 +173,15 @@ public class Main {
 	        	break;
 	        	
 	        case 7:
+	        	if (plan1.getNum() == 2) {
+	        		plan1.updateSI(1, -1);
+	        	}
+	        	if (plan1.getNum() == 3) {
+	        		plan1.updateSI(1, -1);
+	        		plan1.updateSI(2, -1);
+	        	}
+	        	break;
+	        case 8:
 	        	System.out.println("--------------------REMINDER--------------------");
 	        	System.out.println("*THIS IS A PROTOTYPE DO NOT USE FOR REAL DIVES!*");
 	        	System.out.println("--------------------THANK YOU-------------------");

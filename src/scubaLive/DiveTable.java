@@ -147,14 +147,20 @@ public class DiveTable {
 		int indext = pgToIndex(spg);
 		int indexd = 11;
 		
+		
 		//skip depths in which dives from spg aren't allowed
 		while (divet[27][indexd] + 4 < indext) 
 			indexd--;
 
 		//find depth which allows for BT at certain spg
-		while(divet[divet[27][indexd]+4][indexd] < time + divet[indext][indexd])
-			indexd--;
-		
+		if (spg != 'a') {
+			while(divet[divet[27][indexd]+4][indexd] < time + divet[indext][indexd])
+				indexd--;
+		} else {
+			while(divet[divet[27][indexd]+4][indexd] < time)
+				indexd--;
+		}
+
 		return divet[0][indexd];
 		
 	}

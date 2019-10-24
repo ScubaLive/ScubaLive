@@ -8,8 +8,8 @@ public class Plan {
 	private Dive dive1;
 	private Dive dive2;
 	private Dive dive3;
-	SurfaceInterval si1;
-	SurfaceInterval si2;
+	private SurfaceInterval si1;
+	private SurfaceInterval si2;
 	private boolean safe;
 	//int altitude;
 	
