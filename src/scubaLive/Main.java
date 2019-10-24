@@ -181,7 +181,7 @@ public class Main {
 	        }
 	        
 		}
-		
+
 	}
 	
 	public static int getInputInt(Scanner in, int range) {
