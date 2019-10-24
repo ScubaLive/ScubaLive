@@ -150,15 +150,38 @@ public class Plan {
 		return string;
 	}
 	
+	public int getDepth(int diveid) {
+		
+		return idHelper(diveid).getDepth();
+		
+	}
+	
+	public int getBT(int diveid) {
+		
+		return idHelper(diveid).getBT();
+		
+	}
+	
+	private Dive idHelper(int diveid) {
+		Dive result = null;
+		
+		if (diveid == 1) result = dive1;
+		if (diveid == 2) result = dive2;
+		if (diveid == 3) result = dive3;
+		
+		return result;
+	}
 	
 	public String diveString(int diveid) {
 		String string = null;
 		
-		if (diveid == 1) string = dive1.toString();
-		if (diveid == 2) string = dive2.toString();
-		if (diveid == 3) string = dive3.toString();
+		string = idHelper(diveid).toString();
 		
 		return string;
+	}
+	
+	public int getNum() {
+		return numdives;
 	}
 	
 	@Override

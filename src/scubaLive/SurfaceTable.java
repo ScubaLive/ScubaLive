@@ -39,18 +39,21 @@ public class SurfaceTable {
 	}
 	
 	public char getEndingPressureGroup(char startingPressureGroup, int surfaceIntervalTime) {
-		char endingPressureGroup = 0;
+		char endingPressureGroup = 'a';
 		int startPg = startingPressureGroup - 65;
-		for (int i = 0; i < this.padi[startPg].length; i++) {
-			if (this.padi[startPg][i] >= surfaceIntervalTime) {
-				i = (int) Math.ceil((double)i/2.0);
-				if (i > startPg) {
-					i = i -1;					
+		
+		if(startingPressureGroup != 'a') {
+			for (int i = 0; i < this.padi[startPg].length; i++) {
+				if (this.padi[startPg][i] >= surfaceIntervalTime) {
+					i = (int) Math.ceil((double)i/2.0);
+					if (i > startPg) {
+						i = i -1;					
+					}
+					startPg = startPg - i;
+					startPg = startPg + 65;
+					endingPressureGroup = (char) startPg;
+					return endingPressureGroup;
 				}
-				startPg = startPg - i;
-				startPg = startPg + 65;
-				endingPressureGroup = (char) startPg;
-				return endingPressureGroup;
 			}
 		}
 		return endingPressureGroup;
@@ -58,15 +61,16 @@ public class SurfaceTable {
 	
 	public int[] getSurfaceIntervalTime(char startPg, char endPg) {
 		int [] surfTime = {0, 0};
-		int start = startPg - 65;
-		int end = endPg - 65;
-		int index = (start - end) * 2;
-		
-		if (index >= 0) {		
-			surfTime[0] = this.padi[start][index];
-			surfTime[1] = this.padi[start][index+1];
+		if (endPg != 'a' && startPg != 'a') {
+			int start = startPg - 65;
+			int end = endPg - 65;
+			int index = (start - end) * 2;
+			
+			if (index >= 0) {		
+				surfTime[0] = this.padi[start][index];
+				surfTime[1] = this.padi[start][index+1];
+			}
 		}
-		
 		
 		return surfTime;
 	}

@@ -34,7 +34,7 @@ public class Dive {
 		this.result [2] = startpg;
 		
 		//If time requested is past the maximum bottom time at depth & spg set return array to carry user recomendations for UI warnings
-		if (maxbt < time) {
+		if (maxbt < time || (diveid > 1 && startpg == 'a')) {
 			safe = false;
 			result[0] = maxbt;
 			result[1] = dtable.maxDepth(time, startpg);
@@ -55,6 +55,7 @@ public class Dive {
 			result[4] = ssrequired ? 1 : 0;
 		} 
 		
+		
 	}
 	
 	public void updateDive(char startpg) {
@@ -65,7 +66,7 @@ public class Dive {
 		result [2] = startpg;
 		
 		//If time requested is past the maximum bottom time at depth & spg set return array to carry user recomendations for UI warnings
-		if (maxbt < bottomt) {
+		if (maxbt < bottomt || (diveid > 1 && spg == 'a')) {
 			safe = false;
 			result[0] = maxbt;
 			result[1] = dtable.maxDepth(bottomt, startpg);
@@ -121,7 +122,8 @@ public class Dive {
 		String string = new String();
 		
 		if(safe) string = "Safe Dive\n";
-		else string = "Unsafe Dive, max bottom time at " + ddepth + "m" + " is " + result[0] + " minutes at starting pressure group " + spg + ".\n";
+		else string = "Unsafe Dive, max bottom time at " + ddepth + "m" + " is " + result[0] + " minutes diving from " + ((spg == 'a') ? "the surface": "pressure group " + spg) + ".\n";
+		if(diveid > 1 && spg == 'a') string = string + "Dive is unsafe because of previous dive\n";
 		
 		return string;
 	}
