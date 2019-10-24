@@ -62,7 +62,9 @@ public class Plan {
 			}
 				
 		} else {
+			
 			throw new IllegalArgumentException("Invalid number of dives");
+			
 		}
 		
 	}
@@ -87,7 +89,9 @@ public class Plan {
 			this.updateSafe();
 			
 		} else { 
+			
 			throw new IllegalArgumentException("Invalid diveid");
+			
 		}
 		
 	}
@@ -96,14 +100,19 @@ public class Plan {
 		SurfaceInterval si = null;
 		
 		if(siid == 1 || siid == 2) {
+			
 			if (siid == 1) si = si1;
 			if (siid == 2) si = si2;
 			si.updateInterval(time);
+			if (time < 0) si.setMinInterval();
 			
 		} else {
+			
 			throw new IllegalArgumentException("Invalid siid");
+			
 		}
 	}
+
 	
 	public void updateSafe() {
 		boolean safety = true;
@@ -122,6 +131,23 @@ public class Plan {
 		
 		safe = safety;
 		
+	}
+	
+	public boolean isSafe() {
+		return safe;
+	}
+	
+	public String warnings() {
+		String string = null;
+		
+		return string;
+	}
+	
+	@Override 
+	public String toString() {
+		String string = null;
+		
+		return string;
 	}
 	
 
