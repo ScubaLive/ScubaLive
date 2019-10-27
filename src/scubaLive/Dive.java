@@ -59,34 +59,7 @@ public class Dive {
 	}
 	
 	public void updateDive(char startpg) {
-		int maxbt = dtable.maxBT(startpg, ddepth);
-		result = new int[]{bottomt, ddepth, (int) startpg, (int) 'a', 0, 1};
-		
-		spg = startpg;
-		result [2] = startpg;
-		
-		//If time requested is past the maximum bottom time at depth & spg set return array to carry user recomendations for UI warnings
-		if (maxbt < bottomt || (diveid > 1 && spg == 'a')) {
-			safe = false;
-			result[0] = maxbt;
-			result[1] = dtable.maxDepth(bottomt, startpg);
-			result[5] = 0;
-			// find new spg if possible
-			if(startpg != 'a') {
-				if (dtable.maxBT('a', ddepth) > bottomt) {
-					result[2] = dtable.minPG(bottomt, ddepth);
-					result[3] = dtable.diveFPG((char) result[2], ddepth, bottomt);
-					result[4] = dtable.ssTest((char) result[3], ddepth) ? 1 : 0;
-				}
-			}
-		}
-		else {
-			fpg = dtable.diveFPG(startpg, ddepth, bottomt);
-			safe = true;
-			result[3] = fpg;
-			ssrequired = dtable.ssTest(fpg, ddepth);
-			result[4] = ssrequired ? 1 : 0;
-		} 
+		this.updateDive(this.bottomt, this.ddepth, startpg);
 		
 	}
 	

@@ -29,9 +29,7 @@ public class SurfaceInterval {
 	}
 	
 	public void updateInterval() {
-		spg = sdive.getFPG();
-		fpg = stable.getEndingPressureGroup(spg, interval);
-		fdive.updateDive(fpg);
+		this.updateInterval(this.interval);
 	}
 	
 	public void setMinInterval () {
