@@ -14,6 +14,9 @@ Mac Users (command-line):
 3. Copy the repository URL in git (click on clone or download. This will open a popup with the URL)
 4. Type in the command: `git clone https://github.com/ScubaLive/ScubaLive.git`
 
+# How to set up client project in your IDE
+Follow directions in the READ.me [here](https://github.com/ScubaLive/ScubaLive/tree/master/client)
+
 # How To Use Git
 The master branch should always the branch that has no broken code in it. We do not want to touch this branch so what we need to do is to "branch off" this branch.
 When branching off a branch, it will create a copy of the master branch and create a new branch for you to work on.
