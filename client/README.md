@@ -10,6 +10,11 @@ Node
 If you do not have yarn, install it [here](https://yarnpkg.com/lang/en/docs/install/#mac-stable)
 You will need the latest node, [Node](https://nodejs.org/en/)
 
+Run the following command in terminal(mac)/command prompt(windows)
+```bash
+yarn install
+```
+
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 1. Open the project in your selected IDE.
 2. Make sure that you select on "client" when opening the project and not "ScubaLive"
