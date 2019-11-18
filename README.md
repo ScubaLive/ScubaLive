@@ -32,6 +32,14 @@ It will highlight and add an asterik (*) next to the branch you are currently on
 `git push -u origin <branch_name>` will push your branch to the repository.
 6. When going to the repository on github website, we can now see the newly created branch in the dropdown.
 
+*To push code remote repository*
+1. `git status` to view change files
+2. Make sure files which were not changed do not show
+3. If there are files listed in the "Changes not staged for commit", you can either select all files to add by using `git add .` or select specific files one at a time using `git add <file>`
+4. Use `git status` again to check that those files have been staged.
+5. If all wanted files are staged, use `git commit -m "<yourmessage>"` to commit your changes. NOTE: make message descripitve of what you did.
+6. If you forgot to push prior to making changes, `git push -u origin <branch_name>`. Else, you could use `git push`.
+
 *Reviewing code:*
 When you are done coding on section of the code, it is important that we review code before merging it into the main branch as we do not want any broken code in the main branch.
 
