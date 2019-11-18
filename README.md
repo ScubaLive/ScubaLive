@@ -36,6 +36,7 @@ It will highlight and add an asterik (*) next to the branch you are currently on
 1. `git status` to view change files
 2. Make sure files which were not changed do not show
 3. If there are files listed in the "Changes not staged for commit", you can either select all files to add by using `git add .` or select specific files one at a time using `git add <file>`
+NOTE: DO NOT STAGE "../.project" file
 4. Use `git status` again to check that those files have been staged.
 5. If all wanted files are staged, use `git commit -m "<yourmessage>"` to commit your changes. NOTE: make message descripitve of what you did.
 6. If you forgot to push prior to making changes, `git push -u origin <branch_name>`. Else, you could use `git push`.
