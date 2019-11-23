@@ -44,12 +44,20 @@ module.exports = function (ctx) {
 
       components: [
         'QLayout',
+        'QList',
+        'QItem',
+        'QItemSection',
+        'QItemLabel',
         'QCard',
         'QCardSection',
         'QCardActions',
         'QInput',
         'QBtn',
-        'QBtnDropdown'
+        'QBtnDropdown',
+        'QCard',
+        'QCardSection',
+        'QCardActions',
+        'QTooltip'
       ],
       directives: [],
 
