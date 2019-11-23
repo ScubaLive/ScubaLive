@@ -3,12 +3,12 @@
     <div class="q-gutter-sm">
       <div class="row full-width row wrap justify-start items-start content-start">
         <q-input standout dark outlined filled v-model="planName" label="Plan Name" :dense="dense"/>
-        <q-input standout dark outlined filled type="number" v-model="altitude" label="Altitude" lazy-rules
-          :rules="[
-          val => val !== null && val !== '' || 'Please type a number',
-          val => val >= 0 && val <= 40 || 'Please type a number between 0 and 40'
-        ]"
-        />
+        <!--<q-input standout dark outlined filled type="number" v-model="altitude" label="Altitude" lazy-rules-->
+          <!--:rules="[-->
+          <!--val => val !== null && val !== '' || 'Please type a number',-->
+          <!--val => val >= 0 && val <= 40 || 'Please type a number between 0 and 40'-->
+        <!--]"-->
+        <!--/>-->
         <q-input standout dark outlined filled type="number" v-model="diveCount" label="Number of Dives" lazy-rules
                  :rules="[
           val => val !== null && val !== '' || 'Please type a number',
@@ -18,6 +18,8 @@
         <q-btn color="primary" icon-right="description" label="Note" size="lg"/>
       </div>
       <div class="row full-width row wrap justify-start items-start content-start">
+        <q-btn color="primary" icon-right="save" label="Save" size="sm"/>
+        <q-btn color="primary" icon-right="delete" label="Delete" size="sm"/>
         <q-btn-dropdown color="primary" label="Options" size="sm">
           <q-list>
             <q-item clickable v-close-popup @click="onItemClick">
@@ -39,8 +41,6 @@
             </q-item>
           </q-list>
         </q-btn-dropdown>
-        <q-btn color="primary" icon-right="save" label="Save" size="sm"/>
-        <q-btn color="primary" icon-right="delete" label="Delete" size="sm"/>
       </div>
       <h1>Test</h1>
     </div>
