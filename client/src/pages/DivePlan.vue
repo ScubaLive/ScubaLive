@@ -2,7 +2,14 @@
   <div class="q-pa-sm bg-grey-10 text-white">
     <div class="q-gutter-sm">
       <div class="row full-width row wrap justify-start items-start content-start">
-        <q-input standout dark outlined filled v-model="planName" label="Plan Name" :dense="dense"/>
+        <q-input
+          standout
+          dark
+          outlined
+          filled
+          v-model="planName"
+          label="Plan Name"
+        />
         <!--<q-input standout dark outlined filled type="number" v-model="altitude" label="Altitude" lazy-rules-->
           <!--:rules="[-->
           <!--val => val !== null && val !== '' || 'Please type a number',-->

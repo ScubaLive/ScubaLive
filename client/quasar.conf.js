@@ -48,8 +48,14 @@ module.exports = function (ctx) {
         'QCardSection',
         'QCardActions',
         'QInput',
+        'QBanner',
         'QBtn',
-        'QBtnDropdown'
+        'QBtnDropdown',
+        'QTabPanels',
+        'QTabPanel',
+        'QSeparator',
+        'QSpace',
+
       ],
       directives: [],
 
@@ -63,6 +69,7 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       scopeHoisting: true,
+      'no-unused-vars': 'off',
       // vueRouterMode: 'history',
       // showProgress: false,
       // gzip: true,
@@ -81,7 +88,8 @@ module.exports = function (ctx) {
             formatter: require('eslint').CLIEngine.getFormatter('stylish')
           }
         })
-      }
+      },
+
     },
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
