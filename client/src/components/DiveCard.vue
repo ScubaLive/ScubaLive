@@ -1,5 +1,4 @@
 <template>
-  <div>
     <q-card class="my-card">
       <q-card-section class="bg-teal text-white">
         <div class="text-h6">Dive #{{diveNumber}}</div>
@@ -24,16 +23,24 @@
         </template>
       </q-input>
     </q-card>
-  </div>
 </template>
 
 <script>
+// import DiveValues from 'DiveValues';
 export default {
   name: 'DiveCard',
   props: {
     diveNumber: Number,
     maxDepth: null,
     bottomTime: null
+  },
+  methods: {
+    // saveValue() {
+    //   DiveValues.
+    // }.
+    // onClickChild (value) {
+    //   console.log(value) // someValue
+    // }
   }
 }
 </script>

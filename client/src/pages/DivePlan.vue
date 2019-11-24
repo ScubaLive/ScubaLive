@@ -43,12 +43,24 @@
       </div>
       <div class="q-pa-md">
         <div class="q-col-gutter-md fit row wrap justify-center items-start content-start">
-          <div class="col-4" v-for="index in diveCount" v-bind:key="index">
-            <dive-card :dive-number="index"></dive-card>
+          <div class="col-4" v-for="index in parseInt(diveCount)" v-bind:key="index">
+            <dive-card :dive-number="index" @clicked="onClickChild"></dive-card>
           </div>
         </div>
       </div>
-
+      <graph-area
+          :height="500"
+          :axis-full-mode="true"
+          :shape="'normal'"
+          :opacity="0.8"
+          :borderline="true"
+          :labels="[ '1Q', '2Q', '3Q', '4Q', '1Q', '2Q', '3Q', '4Q', '1Q', '2Q', '3Q', '4Q' ]"
+          :axisFullMode="true"
+          :values="values">
+          <note :text="'Area Chart'"></note>
+          <legends :names="[ 'Dive1', 'Dive2', 'Dive3' ]"></legends>
+          <guideline :tooltip-y="true"></guideline>
+      </graph-area>
   </div>
 </template>
 
@@ -61,16 +73,27 @@ export default {
     return {
       planName: 'Dive1',
       altitude: null,
-      diveCount: null,
-
-      accept: false
+      diveCount: 1,
+      diveValues: [],
+      accept: false,
+      values: [
+        [ 0, 10, 10, 0 ]
+      ]
     }
   },
   methods: {
     onItemClick () {
       console.log('Clicked on an Item')
+    },
+    onClickButton (event) {
+      this.$emit('clicked', 'someValue')
     }
   }
+  // computed: {
+  //   generateGraph() {
+  //
+  //   },
+  // }
 }
 </script>
 
