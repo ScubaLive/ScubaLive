@@ -6,7 +6,7 @@ class SurfaceInterval {
     let fdive = dive2
     let interval = 0
     let stable = table
-    let spg = dive1.getFPG
+    let spg = dive1.getFPG()
     let fpg = spg
     fdive.updateDive(fpg, 0, 0)
   }

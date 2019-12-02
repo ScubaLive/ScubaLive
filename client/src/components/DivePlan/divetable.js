@@ -43,6 +43,7 @@ export default class DiveTable {
 
   static pgToIndex (pg) {
     let index = 0
+    pg = pg.toString()
 
     if (pg !== 'a') {
       index = pg.charCodeAt(0)
@@ -73,7 +74,9 @@ export default class DiveTable {
     let ioffset = DiveTable.pgToIndex(spg)
     let toffset = 0
 
-    if (ioffset !== 0) toffset = DiveTable.divet[ioffset][DiveTable.depthIndex(depth)]
+    if (ioffset !== 0) {
+      toffset = DiveTable.divet[ioffset][DiveTable.depthIndex(depth)]
+    }
 
     return [ioffset, toffset]
   }

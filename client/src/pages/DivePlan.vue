@@ -7,7 +7,8 @@
           dark
           outlined
           filled
-          v-model="planName"
+          v-model="diveToSubmit.name"
+          @change="updateName(diveToSubmit.name)"
           label="Plan Name"
         />
         <!--<q-input standout dark outlined filled type="number" v-model="altitude" label="Altitude" lazy-rules-->
@@ -16,8 +17,17 @@
           <!--val => val >= 0 && val <= 40 || 'Please type a number between 0 and 40'-->
         <!--]"-->
         <!--/>-->
-        <q-input standout dark outlined filled type="number" v-model="diveCount" label="Number of Dives" lazy-rules
-                 :rules="[
+        <q-input
+          standout
+          dark
+          outlined
+          filled
+          type="number"
+          v-model="diveToSubmit.plan.numdives"
+          @change="updateNum(diveToSubmit.plan.numdives)"
+          label="Number of Dives"
+          lazy-rules
+          :rules="[
           val => val !== null && val !== '' || 'Please type a number',
           val => val > 0 && val <= 3 || 'Please enter a number between 1 and 3'
         ]"
@@ -55,20 +65,41 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'DivePlan',
   data () {
     return {
-      planName: 'Dive1',
-      altitude: null,
-      diveCount: null,
-
-      accept: false
+      diveToSubmit: {},
+      numofdives: 0,
+      name: ''
     }
   },
   methods: {
+    ...mapActions('diveplan', ['setName', 'setNum']),
     onItemClick () {
       console.log('Clicked on an Item')
+    },
+    updateName (name) {
+      this.setName({ id: this.dives.id, name: name })
+    },
+    updateNum (num) {
+      this.setNum({ id: this.dives.id, number: num })
+    }
+  },
+  computed: {
+    ...mapState('diveplan', ['selected']),
+    ...mapGetters('diveplan', ['dives'])
+  },
+  mounted () {
+    this.diveToSubmit = Object.assign({}, this.dives)
+    this.numofdives = this.diveToSubmit.plan.numdives
+    this.name = this.dives.name
+    console.log(this.dives.name)
+  },
+  watch: {
+    'selected' (val) {
+      this.diveToSubmit = Object.assign({}, this.dives)
     }
   }
 }

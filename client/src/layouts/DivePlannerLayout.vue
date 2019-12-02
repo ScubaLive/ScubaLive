@@ -15,10 +15,18 @@
         </q-toolbar-title>
 
         <q-btn
+          v-if="!loggedIn"
           to="/auth"
           flat
           icon-right="account_circle"
           label="Login"
+          class="absolute-right"/>
+        <q-btn
+          v-else
+          @click = "logoutUser"
+          flat
+          icon-right="account_circle"
+          label="Logout"
           class="absolute-right"/>
       </q-toolbar>
     </q-header>
@@ -26,7 +34,13 @@
     <!--Vuex will store information about the login user so that in can be used in multiple components once-->
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-2">
       <q-list>
-        <q-item-label header>Dive Plans</q-item-label>
+        <plan
+          v-for="plan in plans"
+          :key="plan.id"
+          :plan="plan"
+          :id="plan.id"
+          :to="{name: 'DivePlan'}"
+        ></plan>
       </q-list>
     </q-drawer>
 
@@ -38,12 +52,27 @@
 </template>
 
 <script>
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'DivePlanner',
   data () {
     return {
       leftDrawerOpen: false
     }
+  },
+  computed: {
+    ...mapState('auth', ['loggedIn']),
+    ...mapGetters('diveplan', ['plans'])
+  },
+  methods: {
+    ...mapActions('auth', ['logoutUser']),
+    ...mapActions('diveplan', ['setSelect']),
+    OnClick (id) {
+      console.log(id)
+    }
+  },
+  components: {
+    'plan': require('components/DivePlan/plan.vue').default
   }
 }
 </script>

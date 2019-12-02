@@ -23,20 +23,15 @@ const state = {
 }
 
 const mutations = {
-  setSelect (state, id) {
+  setSelect ({ state }, id) {
     state.selected = id
   },
-  setName (state, payload) {
-    let id = payload.id
-    let name = payload.name
-
+  setName ({ state }, id, name) {
     state.plans.filter((object) => {
       return object.id === id
     })[0].name = name
   },
-  setNum (state, payload) {
-    let id = payload.id
-    let num = payload.number
+  setNum ({ state }, id, num) {
     state.plans.filter((object) => {
       return object.id === id
     })[0].plan.updateNum(num)
@@ -50,11 +45,11 @@ const actions = {
   setSelect ({ commit }, id) {
     commit('setSelect', id)
   },
-  setName ({ commit }, payload) {
-    commit('setName', payload)
+  setName ({ commit }, id, name) {
+    commit('setName', id, name)
   },
-  setNum ({ commit }, payload) {
-    commit('setNum', payload)
+  setNum ({ commit }, id, num) {
+    commit('setNum', id, num)
   }
 }
 

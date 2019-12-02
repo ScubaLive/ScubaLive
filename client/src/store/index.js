@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import diveplan from './store-diveplan.js'
+import diveplan from './store-diveplan'
+import auth from './store-auth'
 
 Vue.use(Vuex)
 
@@ -13,7 +14,8 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
-      diveplan
+      diveplan,
+      auth
     },
 
     // enable strict mode (adds overhead!)

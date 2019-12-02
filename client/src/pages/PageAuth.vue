@@ -18,12 +18,11 @@
 
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="login">
-          <div class="text-h6">Login</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          <register :tab="tab" />
         </q-tab-panel>
 
         <q-tab-panel name="register">
-          <register />
+          <register :tab="tab" />
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
