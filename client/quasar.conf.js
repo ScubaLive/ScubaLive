@@ -7,7 +7,8 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
     boot: [
-      'axios'
+      'axios',
+      'VueGraph',
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -44,12 +45,20 @@ module.exports = function (ctx) {
 
       components: [
         'QLayout',
+        'QList',
+        'QItem',
+        'QItemSection',
+        'QItemLabel',
         'QCard',
         'QCardSection',
         'QCardActions',
         'QInput',
         'QBtn',
-        'QBtnDropdown'
+        'QBtnDropdown',
+        'QCard',
+        'QCardSection',
+        'QCardActions',
+        'QTooltip'
       ],
       directives: [],
 
