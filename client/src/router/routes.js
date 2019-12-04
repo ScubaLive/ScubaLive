@@ -9,10 +9,20 @@ const routes = [
     component: () => import('layouts/DiveplannerLayout.vue'),
     children: [
       {
+
+        path: '',
+        component: () => import('pages/Index.vue')
+      },
+      {
+        path: '/auth',
+        component: () => import('pages/PageAuth.vue')
+      },
+      {
         name: 'DivePlan',
         path: '/dive-plan',
         component: () => import('pages/DivePlan.vue')
       }
+
     ]
   },
   {
