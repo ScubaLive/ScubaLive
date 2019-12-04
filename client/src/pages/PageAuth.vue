@@ -5,9 +5,9 @@
 </template>
 
 <script>
-  export default {
-    name: "PageAuth"
-  }
+export default {
+  name: 'PageAuth'
+}
 </script>
 
 <style scoped>
