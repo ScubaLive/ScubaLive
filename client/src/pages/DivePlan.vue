@@ -42,6 +42,13 @@
         <q-btn color="primary" icon-right="delete" label="Delete" size="sm"/>
       </div>
       <div class="q-pa-md">
+          <div class="q-col-gutter-md fit row wrap justify-center items-start content-start">
+              <div class="col-4" v-for="index in parseInt(diveCount - 1)" v-bind:key="index">
+                  <surface-interval-cards :dive-number="index" @clicked="onClickChild"></surface-interval-cards>
+              </div>
+          </div>
+      </div>
+      <div class="q-pa-md">
         <div class="q-col-gutter-md fit row wrap justify-center items-start content-start">
           <div class="col-4" v-for="index in parseInt(diveCount)" v-bind:key="index">
             <dive-card :dive-number="index" @clicked="onClickChild"></dive-card>
@@ -66,9 +73,10 @@
 
 <script>
 import DiveCard from '../components/DiveCard'
+import SurfaceIntervalCards from '../components/SurfaceIntervalCards'
 export default {
   name: 'DivePlan',
-  components: { DiveCard },
+  components: { SurfaceIntervalCards, DiveCard },
   data () {
     return {
       planName: 'Dive1',
