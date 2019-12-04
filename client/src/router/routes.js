@@ -8,15 +8,14 @@ const routes = [
     path: '/dive-planner',
     component: () => import('layouts/DiveplannerLayout.vue'),
     children: [
-    
       {
 
-          path: '',
-          component: () => import('pages/Index.vue')
+        path: '',
+        component: () => import('pages/Index.vue')
       },
       {
-            path: '/auth',
-            component: () => import('pages/PageAuth.vue')
+        path: '/auth',
+        component: () => import('pages/PageAuth.vue')
       },
       {
         name: 'DivePlan',
