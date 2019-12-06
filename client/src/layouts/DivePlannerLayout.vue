@@ -24,7 +24,7 @@
       <q-list>
         <q-item-label header>Dive Plans</q-item-label>
         <q-item clickable v-ripple v-for="plan in plans" v-bind:key="plan">
-          <q-item-selection>{{plan}}</q-item-selection>
+          <q-item-section>{{plan}}</q-item-section>
         </q-item>
       </q-list>
       <q-btn round color="primary" icon="add" />

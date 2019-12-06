@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-sm bg-grey-10 text-white">
       <div class="full-width row wrap justify-start items-start content-start q-gutter-sm">
-        <q-input standout dark outlined filled v-model="planName" label="Plan Name" :dense="dense"/>
+        <q-input standout dark outlined filled v-model="planName" label="Plan Name"/>
         <!--<q-input standout dark outlined filled type="number" v-model="altitude" label="Altitude" lazy-rules-->
           <!--:rules="[-->
           <!--val => val !== null && val !== '' || 'Please type a number',-->
@@ -38,7 +38,7 @@
         </q-btn-dropdown>
       </div>
       <div class="row full-width row wrap justify-start items-start content-start">
-        <q-btn color="primary" icon-right="save" label="Save" size="sm"/>
+        <q-btn v-on:click="save" color="primary" icon-right="save" label="Save" size="sm"/>
         <q-btn color="primary" icon-right="delete" label="Delete" size="sm"/>
       </div>
       <div class="q-pa-md">
@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import DiveCard from '../components/DiveCard'
 import SurfaceIntervalCards from '../components/SurfaceIntervalCards'
 export default {
@@ -82,26 +83,73 @@ export default {
       planName: 'Dive1',
       altitude: null,
       diveCount: 1,
-      diveValues: [],
-      accept: false,
-      values: [
-        [ 0, 10, 10, 0 ]
-      ]
+      accept: false
     }
   },
   methods: {
+    ...mapActions({
+      initDiveCard: 'DiveCard/initDiveCard'
+    }),
     onItemClick () {
       console.log('Clicked on an Item')
     },
     onClickButton (event) {
       this.$emit('clicked', 'someValue')
+    },
+    onClickChild () {
+      console.log('does nothing')
+    },
+    save () {
+      this.$q.notify({
+        message: 'Dive Plan Saved',
+        color: 'green',
+        position: 'top'
+      })
+    }
+  },
+  computed: {
+    // grabs data field from dive card store
+    ...mapState({
+      diveValues: state => state.DiveCard.data
+    }),
+    values: function () {
+      let chart = []
+
+      Object.keys(this.diveValues).forEach(value => {
+        const diveCard = this.diveValues[value]
+        chart.push(0)
+        chart.push(-Math.abs(diveCard.maxDepth))
+        chart.push(-Math.abs(diveCard.maxDepth))
+        chart.push(0)
+      })
+
+      let array = []
+      array.push(chart)
+      return array
+    }
+  },
+  watch: {
+    // it will return all the dive cards data when a dive card has been modified
+    diveValues: {
+      handler: function (newValue) {
+        let chart = []
+
+        Object.keys(this.diveValues).forEach(value => {
+          const diveCard = this.diveValues[value]
+          chart.push(0)
+          chart.push(-Math.abs(diveCard.maxDepth))
+          chart.push(-Math.abs(diveCard.maxDepth))
+          chart.push(0)
+        })
+
+        let array = []
+        array.push(chart)
+        Object.assign(this.values, array)
+        console.log(this.values)
+      },
+      deep: true
     }
   }
-  // computed: {
-  //   generateGraph() {
-  //
-  //   },
-  // }
 }
 </script>
 

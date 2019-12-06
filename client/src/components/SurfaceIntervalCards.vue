@@ -4,7 +4,7 @@
             <div class="text-h6">Surface Interval #{{diveNumber}}</div>
         </q-card-section>
 
-        <q-input filled v-model="surfaceTime" hint="Surface Interval Time (minutes)" :dense="dense">
+        <q-input filled v-model="surfaceTime" hint="Surface Interval Time (minutes)">
             <template v-slot:append>
                 <q-icon name="info">
                     <q-tooltip :delay="500" anchor="center right" self="center left" :offset="[10, 10]">
