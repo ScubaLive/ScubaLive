@@ -8,7 +8,7 @@
           <!--val => val >= 0 && val <= 40 || 'Please type a number between 0 and 40'-->
         <!--]"-->
         <!--/>-->
-        <q-input standout dark outlined filled type="number" v-model="diveCount" label="Number of Dives" lazy-rules
+        <q-input standout dark outlined filled type="number" v-model="diveCount" label="Number of Dives"
                  :rules="[
           val => val !== null && val !== '' || 'Please type a number',
           val => val > 0 && val <= 3 || 'Please enter a number between 1 and 3'
@@ -42,16 +42,16 @@
         <q-btn color="primary" icon-right="delete" label="Delete" size="sm"/>
       </div>
       <div class="q-pa-md">
-          <div class="q-col-gutter-md fit row wrap justify-center items-start content-start">
+          <div class="q-col-gutter-md fit row wrap justify-center items-start content-start" v-if="diveCount <=3">
               <div class="col-4" v-for="index in parseInt(diveCount - 1)" v-bind:key="index">
                   <surface-interval-cards :dive-number="index" @clicked="onClickChild"></surface-interval-cards>
               </div>
           </div>
       </div>
       <div class="q-pa-md">
-        <div class="q-col-gutter-md fit row wrap justify-center items-start content-start">
+        <div class="q-col-gutter-md fit row wrap justify-center items-start content-start" v-if="diveCount <= 3">
           <div class="col-4" v-for="index in parseInt(diveCount)" v-bind:key="index">
-            <dive-card :dive-number="index" @clicked="onClickChild"></dive-card>
+            <dive-card :dive-number="index" @clicked="onClickChild" ></dive-card>
           </div>
         </div>
       </div>
@@ -136,10 +136,12 @@ export default {
 
         Object.keys(this.diveValues).forEach(value => {
           const diveCard = this.diveValues[value]
-          chart.push(0)
-          chart.push(-Math.abs(diveCard.maxDepth))
-          chart.push(-Math.abs(diveCard.maxDepth))
-          chart.push(0)
+          if (diveCard.maxDepth >= 0 && diveCard.maxDepth <= 40) {
+            chart.push(0)
+            chart.push(-Math.abs(diveCard.maxDepth))
+            chart.push(-Math.abs(diveCard.maxDepth))
+            chart.push(0)
+          }
         })
 
         let array = []

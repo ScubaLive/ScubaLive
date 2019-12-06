@@ -5,7 +5,10 @@
       </q-card-section>
 {{ diveData.maxDepth}}
       <q-input filled :value="diveData.maxDepth" @input="maxDepthChange"
-               hint="Max Depth (meters)" type="number" >
+               hint="Max Depth (meters)" type="number" :rules="[
+          val => val !== null && val !== '' || 'Please type a number',
+          val => val > 0 && val <= 40 || 'Please enter a number between 1 and 40'
+        ]">
         <template v-slot:append>
           <q-icon name="info">
             <q-tooltip :delay="500" anchor="center right" self="center left" :offset="[10, 10]">
