@@ -7,8 +7,7 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
     boot: [
-      'axios',
-      'VueGraph',
+      'axios'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -58,7 +57,14 @@ module.exports = function (ctx) {
         'QCard',
         'QCardSection',
         'QCardActions',
-        'QTooltip'
+        'QTooltip',
+        'QBtnDropdown',
+        'QTabPanels',
+        'QTabPanel',
+        'QSeparator',
+        'QSpace',
+        'QList'
+
       ],
       directives: [],
 
@@ -77,6 +83,8 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       scopeHoisting: true,
+      'no-unused-vars': 'off',
+      'no-empty-pattern': 'off',
       // vueRouterMode: 'history',
       // showProgress: false,
       // gzip: true,

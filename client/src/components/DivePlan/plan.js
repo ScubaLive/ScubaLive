@@ -1,5 +1,5 @@
-import Dive from 'dive.js'
-import SurfaceInterval from 'surfaceinterval.js'
+import Dive from './dive.js'
+import SurfaceInterval from './surfaceinterval.js'
 
 class Plan {
   constructor () {
@@ -32,7 +32,6 @@ class Plan {
               this.si2 = new SurfaceInterval(this.dive2, this.dive3)
             }
           }
-
           diff--
         }
       }
@@ -43,7 +42,7 @@ class Plan {
         this.updateSafe()
       }
     } else {
-      throw 'Invalid number of dives'
+      console.log('Invalid number of dives')
     }
   }
 
@@ -68,10 +67,9 @@ class Plan {
       }
       dive.updateDive(time, depth, spg)
       if (si != null) si.updateInterval()
-
       this.updateSafe()
     } else {
-      throw 'Invalid diveid'
+      console.log('Invalid diveid')
     }
   }
 
@@ -86,7 +84,7 @@ class Plan {
       if (time < 0) si.setMinInterval()
       if (siid === 1 && this.si2 !== null) this.si2.updateInterval()
     } else {
-      throw 'Invalid siid'
+      console.log('Invalid siid')
     }
   }
 
@@ -104,18 +102,11 @@ class Plan {
     if (this.numdives === 3) {
       safety = this.dive1.isSafe() && this.dive2.isSafe()
     }
-
     this.safe = safety
   }
 
   isSafe () {
     return this.safe
-  }
-
-  warnings () {
-    let string = ''
-
-    return string
   }
 
   getDepth (diveid) {
@@ -162,3 +153,5 @@ class Plan {
     return string
   }
 }
+
+export default Plan

@@ -8,6 +8,7 @@ const routes = [
     path: '/dive-planner',
     component: () => import('layouts/DiveplannerLayout.vue'),
     children: [
+
       {
 
         path: '',

@@ -1,6 +1,6 @@
-import DiveTable from 'divetable.js'
+import DiveTable from './divetable.js'
 
-class Dive {
+export class Dive {
   constructor (id) {
     this.bottomt = 0
     this.ddepth = 0
@@ -101,3 +101,5 @@ class Dive {
     return output
   }
 }
+
+export default Dive

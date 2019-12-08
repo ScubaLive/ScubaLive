@@ -1,42 +1,59 @@
 <template>
   <div class="q-pa-sm bg-grey-10 text-white">
-      <div class="full-width row wrap justify-start items-start content-start q-gutter-sm">
-        <q-input standout dark outlined filled v-model="planName" label="Plan Name"/>
-        <!--<q-input standout dark outlined filled type="number" v-model="altitude" label="Altitude" lazy-rules-->
-          <!--:rules="[-->
-          <!--val => val !== null && val !== '' || 'Please type a number',-->
-          <!--val => val >= 0 && val <= 40 || 'Please type a number between 0 and 40'-->
-        <!--]"-->
-        <!--/>-->
-        <q-input standout dark outlined filled type="number" v-model="diveCount" label="Number of Dives"
-                 :rules="[
-          val => val !== null && val !== '' || 'Please type a number',
-          val => val > 0 && val <= 3 || 'Please enter a number between 1 and 3'
-        ]"
-        />
-        <q-btn color="primary" icon-right="description" label="Note" size="lg"/>
+    <div class="full-width row wrap justify-start items-start content-start q-gutter-sm">
+      <q-input
+        standout
+        dark
+        outlined
+        filled
+        v-model="planToSubmit.name"
+        @change="updateName(planToSubmit.name)"
+        label="Plan Name"
+      />
+      <!--<q-input standout dark outlined filled type="number" v-model="altitude" label="Altitude" lazy-rules-->
+        <!--:rules="[-->
+        <!--val => val !== null && val !== '' || 'Please type a number',-->
+        <!--val => val >= 0 && val <= 40 || 'Please type a number between 0 and 40'-->
+      <!--]"-->
+      <!--/>-->
+        <q-input
+          standout
+          dark
+          outlined
+          filled
+          type="number"
+          v-model="planToSubmit.numdives"
+          @change="updateNum(planToSubmit.numdives)"
+          label="Number of Dives"
+          lazy-rules
+          :rules="[
+        val => val !== null && val !== '' || 'Please type a number',
+        val => val > 0 && val <= 3 || 'Please enter a number between 1 and 3'
+      ]"
+      />
+      <q-btn color="primary" icon-right="description" label="Note" size="lg"/>
         <q-btn-dropdown color="primary" label="Options" size="lg">
-          <q-list>
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label>Share</q-item-label>
-              </q-item-section>
-            </q-item>
+        <q-list>
+          <q-item clickable v-close-popup @click="onItemClick">
+            <q-item-section>
+              <q-item-label>Share</q-item-label>
+            </q-item-section>
+          </q-item>
 
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label>Print</q-item-label>
-              </q-item-section>
-            </q-item>
+          <q-item clickable v-close-popup @click="onItemClick">
+            <q-item-section>
+              <q-item-label>Print</q-item-label>
+            </q-item-section>
+          </q-item>
 
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label>Download</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
-      </div>
+          <q-item clickable v-close-popup @click="onItemClick">
+            <q-item-section>
+              <q-item-label>Download</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-btn-dropdown>
+    </div>
       <div class="row full-width row wrap justify-start items-start content-start">
         <q-btn v-on:click="save" color="primary" icon-right="save" label="Save" size="sm"/>
         <q-btn color="primary" icon-right="delete" label="Delete" size="sm"/>
@@ -51,7 +68,7 @@
       <div class="q-pa-md">
         <div class="q-col-gutter-md fit row wrap justify-center items-start content-start" v-if="diveCount <= 3">
           <div class="col-4" v-for="index in parseInt(diveCount)" v-bind:key="index">
-            <dive-card :dive-number="index" @clicked="onClickChild" ></dive-card>
+            <dive-card :dive-number="index" @clicked="onClickChild"></dive-card>
           </div>
         </div>
       </div>
@@ -72,7 +89,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import DiveCard from '../components/DiveCard'
 import SurfaceIntervalCards from '../components/SurfaceIntervalCards'
 export default {
@@ -83,15 +100,20 @@ export default {
       planName: 'Dive1',
       altitude: null,
       diveCount: 1,
-      accept: false
+      accept: false,
+      planToSubmit: {}
     }
   },
   methods: {
-    ...mapActions({
-      initDiveCard: 'DiveCard/initDiveCard'
-    }),
+    ...mapActions('diveplan', ['setName', 'setNum']),
     onItemClick () {
       console.log('Clicked on an Item')
+    },
+    updateName (name) {
+      this.setName({ id: this.plans[this.selected].id, name: name })
+    },
+    updateNum (num) {
+      this.setNum(num)
     },
     onClickButton (event) {
       this.$emit('clicked', 'someValue')
@@ -108,49 +130,18 @@ export default {
     }
   },
   computed: {
-    // grabs data field from dive card store
-    ...mapState({
-      diveValues: state => state.DiveCard.data
-    }),
-    values: function () {
-      let chart = []
-
-      Object.keys(this.diveValues).forEach(value => {
-        const diveCard = this.diveValues[value]
-        chart.push(0)
-        chart.push(-Math.abs(diveCard.maxDepth))
-        chart.push(-Math.abs(diveCard.maxDepth))
-        chart.push(0)
-      })
-
-      let array = []
-      array.push(chart)
-      return array
-    }
+    ...mapState('diveplan', ['selected', 'plans']),
+    ...mapGetters('diveplan', ['dives', 'plan'])
+  },
+  mounted () {
+    this.planToSubmit = Object.assign({}, this.plan)
+    console.log(this.planToSubmit.name)
   },
   watch: {
-    // it will return all the dive cards data when a dive card has been modified
-    diveValues: {
-      handler: function (newValue) {
-        let chart = []
-
-        Object.keys(this.diveValues).forEach(value => {
-          const diveCard = this.diveValues[value]
-          if (diveCard.maxDepth >= 0 && diveCard.maxDepth <= 40) {
-            chart.push(0)
-            chart.push(-Math.abs(diveCard.maxDepth))
-            chart.push(-Math.abs(diveCard.maxDepth))
-            chart.push(0)
-          }
-        })
-
-        let array = []
-        array.push(chart)
-        Object.assign(this.values, array)
-        console.log(this.values)
-      },
-      deep: true
+    'selected' (val) {
+      this.planToSubmit = Object.assign({}, this.plans[this.selected])
     }
+
   }
 }
 </script>

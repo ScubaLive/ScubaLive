@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import DiveCard from './module/dive-card-store'
 
-// import example from './module-example'
+import DiveCard from './module/dive-card-store'
+import diveplan from './store-diveplan2'
+import auth from './store-auth'
 
 Vue.use(Vuex)
 
@@ -14,6 +15,8 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
+      diveplan,
+      auth,
       DiveCard
     },
 

@@ -2,30 +2,45 @@
   <q-layout view="hHh lpr lFf">
     <q-header reveal bordered class="bg-primary text-white" height-hint="98">
       <q-toolbar>
-        <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" icon="menu" aria-label="Menu"/>
+        <q-btn
+          flat
+          dense
+          round
+          @click="leftDrawerOpen = !leftDrawerOpen"
+          icon="menu"
+          aria-label="Menu"/>
 
         <q-toolbar-title>
           Dive Planner
         </q-toolbar-title>
 
-        <div>
-          <q-btn flat label="Login/Signup" />
-          <q-btn round v-if="isLoggedIn">
-            <q-avatar size="42px">
-              <img src="https://cdn.quasar.dev/img/avatar2.jpg">
-            </q-avatar>
-          </q-btn>
-        </div>
+        <q-btn
+          v-if="!loggedIn"
+          to="/auth"
+          flat
+          icon-right="account_circle"
+          label="Login"
+          class="absolute-right"/>
+        <q-btn
+          v-else
+          @click = "logoutUser"
+          flat
+          icon-right="account_circle"
+          label="Logout"
+          class="absolute-right"/>
       </q-toolbar>
     </q-header>
 
     <!--Vuex will store information about the login user so that in can be used in multiple components once-->
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-2">
       <q-list>
-        <q-item-label header>Dive Plans</q-item-label>
-        <q-item clickable v-ripple v-for="plan in plans" v-bind:key="plan">
-          <q-item-section>{{plan}}</q-item-section>
-        </q-item>
+        <plan
+          v-for="plan in plans"
+          :key="plan.id"
+          :plan="plan"
+          :id="plan.id"
+          :to="{name: 'DivePlan'}"
+        ></plan>
       </q-list>
       <q-btn round color="primary" icon="add" />
     </q-drawer>
@@ -38,14 +53,27 @@
 </template>
 
 <script>
+import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'DivePlanner',
   data () {
     return {
-      leftDrawerOpen: false,
-      isLoggedIn: false,
-      plans: ['Dive1', 'Dive2']
+      leftDrawerOpen: false
     }
+  },
+  computed: {
+    ...mapState('auth', ['loggedIn']),
+    ...mapState('diveplan', ['plans'])
+  },
+  methods: {
+    ...mapActions('auth', ['logoutUser']),
+    ...mapActions('diveplan', ['setSelect']),
+    OnClick (id) {
+      console.log(id)
+    }
+  },
+  components: {
+    'plan': require('components/DivePlan/plan.vue').default
   }
 }
 </script>
