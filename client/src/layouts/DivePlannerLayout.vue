@@ -42,6 +42,7 @@
           :to="{name: 'DivePlan'}"
         ></plan>
       </q-list>
+      <q-btn round color="primary" icon="add" />
     </q-drawer>
 
     <q-page-container>
