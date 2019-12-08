@@ -1,5 +1,5 @@
 class SurfaceTable {
-  static padi = [
+  padi = [
     [0, 180],
     [0, 47, 48, 228],
     [0, 21, 22, 69, 70, 250],
@@ -28,7 +28,7 @@ class SurfaceTable {
     [0, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15, 17, 18, 20, 21, 24, 25, 28, 29, 31, 32, 35, 36, 40, 41, 44, 45, 49, 50, 54, 55, 59, 60, 65, 66, 71, 72, 77, 78, 84, 85, 91, 92, 100, 101, 109, 110, 131, 132, 179, 180, 360]
   ]
 
-  static getEndingPressureGroup (startingPressureGroup, surfaceIntervalTime) {
+  getEndingPressureGroup (startingPressureGroup, surfaceIntervalTime) {
     let endingPressureGroup = 'a'
     let startPg = startingPressureGroup.charCodeAt(0) - 65
 
@@ -46,7 +46,7 @@ class SurfaceTable {
     return endingPressureGroup
   }
 
-  static getSurfaceIntervalTime (startPg, endPg) {
+  getSurfaceIntervalTime (startPg, endPg) {
     let surfTime = [0, 0]
     if (endPg !== 'a' && startPg !== 'a') {
       let start = startPg.charCodeAt(0) - 65

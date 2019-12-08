@@ -1,5 +1,5 @@
 export default class DiveTable {
-  static divet = [
+  divet = [
     [10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40, 42],
     [10, 9, 8, 7, 6, 6, 5, 4, 3, 3, -1, -1],
     [20, 17, 15, 13, 11, 10, 9, 8, 6, 5, 5, 4],
@@ -30,7 +30,7 @@ export default class DiveTable {
     [22, 22, 21, 20, 19, 17, 15, 13, 10, 7, 3, 2]
   ]
 
-  static indexToPG (index) {
+  indexToPG (index) {
     let pg = 'a'
 
     if (index >= 1 && index <= 26) {
@@ -41,7 +41,7 @@ export default class DiveTable {
     return pg
   }
 
-  static pgToIndex (pg) {
+  pgToIndex (pg) {
     let index = 0
     pg = pg.toString()
 
@@ -54,7 +54,7 @@ export default class DiveTable {
     return index
   }
 
-  static depthIndex (depth) {
+  depthIndex (depth) {
     let index = 0
 
     for (;DiveTable.divet[0][index] < depth; index++) {}
@@ -62,7 +62,7 @@ export default class DiveTable {
     return index
   }
 
-  static timeIndex (bottomt, indexd) {
+  timeIndex (bottomt, indexd) {
     let index = 1
 
     for (;DiveTable.divet[index][indexd] < bottomt; index++) {}
@@ -70,7 +70,7 @@ export default class DiveTable {
     return index
   }
 
-  static offSet (spg, depth) {
+  offSet (spg, depth) {
     let ioffset = DiveTable.pgToIndex(spg)
     let toffset = 0
 
@@ -81,7 +81,7 @@ export default class DiveTable {
     return [ioffset, toffset]
   }
 
-  static diveFPG (spg, depth, bottomt) {
+  diveFPG (spg, depth, bottomt) {
     let indexd = 0
     let indext = 1
     let offset = DiveTable.offSet(spg, depth)
@@ -103,7 +103,7 @@ export default class DiveTable {
   }
 
   // Returns maximum bottom time from starting pressure group at a certain depth
-  static maxBT (spg, depth) {
+  maxBT (spg, depth) {
     let indexd = DiveTable.depthIndex(depth)
     let offset = DiveTable.offSet(spg, depth)
     let toffset = offset[1]
@@ -113,7 +113,7 @@ export default class DiveTable {
     return maxtime - toffset
   }
 
-  static minPG (time, depth) {
+  minPG (time, depth) {
     let dindex = DiveTable.depthIndex(depth)
     let maxt = DiveTable.divet[DiveTable.divet[27][dindex] + 4][dindex]
     let tdiff = maxt - time
@@ -121,7 +121,7 @@ export default class DiveTable {
     return DiveTable.indexToPG(DiveTable.timeIndex(tdiff, dindex) - 1)
   }
 
-  static maxDepth (time, spg) {
+  maxDepth (time, spg) {
     let indext = DiveTable.pgToIndex(spg)
     let indexd = 11
 
@@ -144,7 +144,7 @@ export default class DiveTable {
     return DiveTable.divet[0][indexd]
   }
 
-  static ssTest (finalpg, depth) {
+  ssTest (finalpg, depth) {
     let ssrequired = false
     let pgindex = DiveTable.pgToIndex(finalpg)
     let dindex = DiveTable.depthIndex(depth)

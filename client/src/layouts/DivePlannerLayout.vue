@@ -62,7 +62,7 @@ export default {
   },
   computed: {
     ...mapState('auth', ['loggedIn']),
-    ...mapGetters('diveplan', ['plans'])
+    ...mapState('diveplan', ['plans'])
   },
   methods: {
     ...mapActions('auth', ['logoutUser']),

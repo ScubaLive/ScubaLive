@@ -7,8 +7,8 @@
           dark
           outlined
           filled
-          v-model="diveToSubmit.name"
-          @change="updateName(diveToSubmit.name)"
+          v-model="planToSubmit.name"
+          @change="updateName(planToSubmit.name)"
           label="Plan Name"
         />
         <!--<q-input standout dark outlined filled type="number" v-model="altitude" label="Altitude" lazy-rules-->
@@ -23,8 +23,8 @@
           outlined
           filled
           type="number"
-          v-model="diveToSubmit.plan.numdives"
-          @change="updateNum(diveToSubmit.plan.numdives)"
+          v-model="planToSubmit.numdives"
+          @change="updateNum(planToSubmit.numdives)"
           label="Number of Dives"
           lazy-rules
           :rules="[
@@ -70,9 +70,7 @@ export default {
   name: 'DivePlan',
   data () {
     return {
-      diveToSubmit: {},
-      numofdives: 0,
-      name: ''
+      planToSubmit: {}
     }
   },
   methods: {
@@ -81,25 +79,23 @@ export default {
       console.log('Clicked on an Item')
     },
     updateName (name) {
-      this.setName({ id: this.dives.id, name: name })
+      this.setName({ id: this.plans[this.selected].id, name: name })
     },
     updateNum (num) {
-      this.setNum({ id: this.dives.id, number: num })
+      this.setNum(num)
     }
   },
   computed: {
-    ...mapState('diveplan', ['selected']),
-    ...mapGetters('diveplan', ['dives'])
+    ...mapState('diveplan', ['selected', 'plans']),
+    ...mapGetters('diveplan', ['dives', 'plan'])
   },
   mounted () {
-    this.diveToSubmit = Object.assign({}, this.dives)
-    this.numofdives = this.diveToSubmit.plan.numdives
-    this.name = this.dives.name
-    console.log(this.dives.name)
+    this.planToSubmit = Object.assign({}, this.plan)
+    console.log(this.planToSubmit.name)
   },
   watch: {
     'selected' (val) {
-      this.diveToSubmit = Object.assign({}, this.dives)
+      this.planToSubmit = Object.assign({}, this.plans[this.selected])
     }
   }
 }

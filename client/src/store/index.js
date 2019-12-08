@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import diveplan from './store-diveplan'
+import diveplan from './store-diveplan2'
 import auth from './store-auth'
 
 Vue.use(Vuex)

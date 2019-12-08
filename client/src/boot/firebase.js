@@ -1,6 +1,7 @@
 // Firebase App (the core Firebase SDK) is always required and must be listed first
 import * as firebase from 'firebase/app'
-
+import DiveTable from '../components/DivePlan/divetable'
+import SurfaceTable from '../components/DivePlan/surfacetable'
 // If you enabled Analytics in your project, add the Firebase SDK for Analytics
 import 'firebase/analytics'
 
@@ -22,6 +23,9 @@ const firebaseConfig = {
 // Initialize Firebase
 let firebaseApp = firebase.initializeApp(firebaseConfig)
 
+let divet = new DiveTable()
+let surfacet = new SurfaceTable()
+
 let firebaseAuth = firebaseApp.auth()
 
-export { firebaseAuth }
+export { firebaseAuth, divet, surfacet }
