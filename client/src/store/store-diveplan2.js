@@ -257,7 +257,7 @@ const actions = {
     }
     if (payload.siid === 1 || payload.siid === 2) {
       if (payload.siid === 1) pack.id = plan.si1
-      if (payload.ssid === 2) pack.id = plan.si2
+      if (payload.siid === 2) pack.id = plan.si2
       dispatch('updateInterval', pack)
       if (payload.time < 0) dispatch('setMinInterval', pack.id)
       if (payload.siid === 1 && state.plan[state.selected].si2 !== null) {
@@ -308,6 +308,15 @@ const actions = {
     } else {
       console.log('Invalid number of dives')
     }
+  },
+  newDive ({ commit }, diveid) {
+    commit('newDive', diveid)
+  },
+  newSI ({ commit }, payload) {
+    commit('newSI', payload)
+  },
+  newPlan ({ commit }) {
+    commit('newPlan')
   }
 }
 
