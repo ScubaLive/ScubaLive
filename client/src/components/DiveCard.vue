@@ -11,7 +11,7 @@
         @change="updateDepth(diveToSubmit)"
         :rules="[
           val => val !== null && val !== '' || 'Please type a number',
-          val => val > 0 && val <= 40 || 'Please enter a number between 1 and 40',
+          val => val >= 0 && val <= 40 || 'Please enter a number between 1 and 40',
         ]">
         <template v-slot:append>
           <q-icon name="info">
@@ -69,7 +69,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.id)
     if (this.diveNumber === 1) this.id = this.plans[this.selected].dive1
     if (this.diveNumber === 2) this.id = this.plans[this.selected].dive2
     if (this.diveNumber === 3) this.id = this.plans[this.selected].dive3

@@ -66,10 +66,10 @@ const state = {
 
 const mutations = {
   setSelect (state, id) {
-    state.selected = id
+    Vue.set(state, 'selected', id)
   },
   setDiveResult (state, payload) {
-    state.dives[payload.id].result = payload.result
+    Vue.set(state.dives[payload.id], 'result', payload.result)
   },
   newPlan (state) {
     let num = state.cplan + 1
@@ -90,21 +90,21 @@ const mutations = {
   },
   newDive (state, did) {
     let startpg = 'a'
+    let num = state.cdive + 1
     let plan = state.plans[state.selected]
     if (did === 1) {
-      plan.dive1 = state.cdive + 1
+      plan.dive1 = num
     }
     if (did === 2) {
       startpg = state.dives[plan.dive1].fpg
-      console.log(startpg)
-      plan.dive2 = state.cdive + 1
+      plan.dive2 = num
     }
     if (did === 3) {
       startpg = state.dives[plan.dive2].fpg
-      plan.dive3 = state.cdive + 1
+      plan.dive3 = num
     }
 
-    state.dives[state.cdive + 1] = {
+    let payload = {
       plan: state.selected,
       bottomt: 0,
       ddepth: 0,
@@ -116,47 +116,54 @@ const mutations = {
       safe: true,
       result: null
     }
+    Vue.set(state.dives, num, payload)
     state.cdive++
   },
   setName (state, payload) {
-    state.plans[state.selected].name = payload.name
+    Vue.set(state.plans[state.selected], 'name', payload.name)
   },
   newSI (state, payload) {
-    if (payload.id === 1) state.plans[state.selected].si1 = state.cSI + 1
-    if (payload.id === 2) state.plans[state.selected].si2 = state.cSI + 1
-    state.SIs[state.cSI + 1] = {
+    let num = state.cSI + 1
+    if (payload.id === 1) state.plans[state.selected].si1 = num
+    if (payload.id === 2) state.plans[state.selected].si2 = num
+    let pack = {
       plan: state.selected,
+      id: num,
       sdive: payload.sdive,
       fdive: payload.fdive,
+      siid: payload.id,
       interval: 0,
       spg: state.dives[payload.sdive].fpg,
       fpg: state.dives[payload.sdive].fpg
     }
+    Vue.set(state.SIs, num, pack)
     state.cSI++
   },
   setDiveFPG (state, payload) {
-    state.dives[payload.id].fpg = payload.fpg
+    Vue.set(state.dives[payload.id], 'fpg', payload.fpg)
   },
   setDiveSafe (state, payload) {
-    state.dives[payload.id].safe = payload.safe
+    Vue.set(state.dives[payload.id], 'safe', payload.safe)
   },
   setDiveSS (state, payload) {
-    state.dives[payload.id].ssrequired = payload.ssrequired
+    Vue.set(state.dives[payload.id], 'ssrequired', payload.ssrequired)
   },
   setDiveBT (state, payload) {
     let dive = state.dives[payload.id]
     dive.bottomt = parseInt(payload.time)
+  },
+  setSI (state, payload) {
+    Vue.set(state.SIs, payload.id, payload)
   },
   setDiveDepth (state, payload) {
     let dive = state.dives[payload.id]
     dive.ddepth = payload.depth
   },
   setDiveSPG (state, payload) {
-    let dive = state.dives[payload.id]
-    dive.spg = payload.spg
+    Vue.set(state.dives[payload.id], 'spg', payload.spg)
   },
   setSIInterval (state, payload) {
-    state.SIs[payload.id].interval = payload.time
+    Vue.set(state.SIs[payload.id], 'interval', payload.interval)
   },
   setSISPG (state, payload) {
     state.SIs[payload.id].interval = payload.spg
@@ -195,16 +202,18 @@ const actions = {
     let si = null
 
     if (payload.diveid > 0 && payload.diveid < 4 && payload.diveid <= plan.numdives) {
+      if (payload.diveid === 1) {
+        if (plan.numdives === 2) si = plan.si1
+      }
       if (payload.diveid === 2) {
-        pack.spg = plan.si1.fpg
-        if (this.numdives === 2) si = plan.si1
+        pack.spg = state.SIs[plan.si1].fpg
+        if (plan.numdives === 3) si = plan.si2
       }
       if (payload.diveid === 3) {
-        pack.spg = plan.si2.fpg
-        if (this.numdives === 3) si = plan.si2
+        pack.spg = state.SIs[plan.si2].fpg
       }
       dispatch('setDive', pack)
-      if (si != null) dispatch('updateInterval', { id: si, time: null })
+      if (si !== null) dispatch('updateInterval', { id: si, interval: null })
       commit('updateSafe')
     } else {
       console.log('Invalid diveid')
@@ -225,7 +234,6 @@ const actions = {
 
     if (maxbt < payload.time || (payload.diveid > 1 && payload.spg === 'a')) {
       commit('setDiveSafe', { id: payload.id, safe: false })
-      dive.safe = false
       result[0] = maxbt
       result[1] = divet.maxDepth(payload.time, payload.spg)
       result[5] = 0
@@ -238,6 +246,7 @@ const actions = {
         }
       }
     } else {
+      commit('setDiveSafe', { id: payload.id, safe: true })
       let tfpg = divet.diveFPG(payload.spg, payload.depth, payload.time)
       commit('setDiveFPG', { id: payload.id, fpg: tfpg })
       result[3] = tfpg
@@ -248,32 +257,30 @@ const actions = {
     commit('setDiveResult', { id: payload.id, result: result })
   },
   updateInterval ({ commit, state, dispatch }, payload) {
+    let pack = payload
     let si = state.SIs[payload.id]
-    if (payload.time === null) payload.time = si.interval
-    commit('setSISPG', { id: payload.id, spg: state.dives[si.sdive].fpg })
-    commit('setSIInterval', payload)
-    commit('setSIFPG', { id: payload.id, fpg: surfacet.getEndingPressureGroup(si.spg, payload.time) })
-    dispatch('setDive', { id: si.fdive, time: null, depth: null, spg: si.fpg })
+    console.log(si)
+    if (payload.interval !== si.interval || payload.spg !== si.spg) {
+      pack.spg = state.dives[si.sdive].fpg
+      pack.fpg = surfacet.getEndingPressureGroup(pack.spg, payload.interval)
+    }
+    commit('setSI', pack)
+    dispatch('setDive', { id: si.fdive, time: null, depth: null, spg: pack.fpg })
   },
   setMinInterval ({ commit, state, dispatch }, si) {
     let tsi = state.SIs[si]
-    dispatch('setSIInterval', { id: si, interval: surfacet.getSurfaceIntervalTime(state.dives[tsi.sdive].fpg, divet.minPG(state.dives[tsi.fdive].bottomt, state.dives[state.SIs[si].fdive].ddepth))[0] })
+    commit('setSIInterval', { id: si, interval: surfacet.getSurfaceIntervalTime(state.dives[tsi.sdive].fpg, divet.minPG(state.dives[tsi.fdive].bottomt, state.dives[state.SIs[si].fdive].ddepth))[0] })
     dispatch('updateInterval', { id: si, time: null })
   },
   updateSI ({ commit, state, dispatch }, payload) {
     let plan = state.plans[state.selected]
-    let pack = {
-      id: 0,
-      time: payload.time
-    }
+    let pack = payload
+    console.log(payload)
     if (payload.siid === 1 || payload.siid === 2) {
-      if (payload.siid === 1) pack.id = plan.si1
-      if (payload.siid === 2) pack.id = plan.si2
       dispatch('updateInterval', pack)
-      if (payload.time < 0) dispatch('setMinInterval', pack.id)
-      if (payload.siid === 1 && state.plan[state.selected].si2 !== null) {
-        pack.id = state.plan[state.selected].si2
-        pack.time = null
+      if (payload.interval < 0) dispatch('setMinInterval', pack.id)
+      if (payload.siid === 1 && plan.si2 !== null) {
+        pack = Object.assign({}, state.SIs[plan.si2])
         dispatch('updateInterval', pack)
       }
     } else {
@@ -289,7 +296,6 @@ const actions = {
   setNum ({ commit, state, dispatch }, divenumber) {
     let plan = state.plans[state.selected]
     let current = plan.numdives
-    console.log('test setNum called' + plan.numdives + '    ' + divenumber)
     if (divenumber > 0 && divenumber < 4) {
       let diff = divenumber - current
 

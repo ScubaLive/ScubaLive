@@ -33,7 +33,7 @@
 
     <!--Vuex will store information about the login user so that in can be used in multiple components once-->
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-2">
-      <q-list hightlight selector>
+      <q-list  seperator>
         <plan
           v-for="plan in plans"
           :key="plan.id"
@@ -42,8 +42,11 @@
           :to="{name: 'DivePlan'}"
           selected
         ></plan>
+        <div class="text-right q-pa-sm">
+          <q-btn round color="primary" icon="add" @click="addPlan"/>
+        </div>
       </q-list>
-      <q-btn round color="primary" icon="add" @click="addPlan"/>
+
     </q-drawer>
 
     <q-page-container>

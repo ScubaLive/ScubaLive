@@ -31,7 +31,7 @@
       ]"
       />
       <note-button></note-button>
-      <q-btn-dropdown color="primary" label="Options" size="lg">
+<!--      <q-btn-dropdown color="primary" label="Options" size="lg">
         <q-list>
           <q-item clickable v-close-popup @click="onItemClick">
             <q-item-section>
@@ -51,16 +51,16 @@
             </q-item-section>
           </q-item>
         </q-list>
-      </q-btn-dropdown>
+      </q-btn-dropdown>-->
     </div>
     <div class="row full-width row wrap justify-start items-start content-start">
-      <q-btn v-on:click="save" color="primary" icon-right="save" label="Save" size="sm"/>
+<!--      <q-btn v-on:click="save" color="primary" icon-right="save" label="Save" size="sm"/>-->
       <q-btn color="primary" icon-right="delete" label="Delete" size="sm"/>
     </div>
     <div class="q-pa-md">
         <div class="q-col-gutter-md fit row wrap justify-center items-start content-start">
             <div class="col-4" v-for="index in parseInt(this.plans[this.selected].numdives - 1)" v-bind:key="index">
-                <surface-interval-cards :dive-number="index" @clicked="onClickChild"></surface-interval-cards>
+                <surface-interval-cards :diveNumber="index"></surface-interval-cards>
             </div>
         </div>
     </div>
@@ -99,7 +99,6 @@ export default {
   data () {
     return {
       planName: 'Dive1',
-      altitude: null,
       accept: false,
       planToSubmit: {}
     }
@@ -128,14 +127,6 @@ export default {
         position: 'top'
       })
     },
-    updateDive1 () {
-
-    },
-    updateDive2 () {
-
-    },
-    updateDive3 () {
-    },
     calculateGraph (dive) {
       let array = []
       array.push(0)
@@ -152,7 +143,6 @@ export default {
     values: function () {
       let chart = []
       const dive1 = this.plans[this.selected].dive1
-      console.log(dive1)
       chart.push(this.calculateGraph(dive1))
 
       if (this.plans[this.selected].dive2 !== null) {
@@ -175,7 +165,6 @@ export default {
     'selected' (val) {
       this.planToSubmit = Object.assign({}, this.plans[this.selected])
     }
-
   }
 }
 </script>

@@ -1,5 +1,5 @@
 class SurfaceTable {
-  padi = [
+  static padi = [
     [0, 180],
     [0, 47, 48, 228],
     [0, 21, 22, 69, 70, 250],
@@ -34,7 +34,7 @@ class SurfaceTable {
 
     if (startingPressureGroup !== 'a') {
       for (let i = 0; i < SurfaceTable.padi[startPg].length; i++) {
-        if (this.padi[startPg][i] >= surfaceIntervalTime) {
+        if (SurfaceTable.padi[startPg][i] >= surfaceIntervalTime) {
           i = Math.ceil((i + 1) / 2.0) - 1
           startPg = startPg - i
           startPg = startPg + 65

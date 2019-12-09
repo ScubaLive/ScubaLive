@@ -109,7 +109,6 @@ export default class DiveTable {
     let toffset = offset[1]
     let maxtindex = DiveTable.divet[27][indexd] + 4
     let maxtime = DiveTable.divet[maxtindex][indexd]
-
     return maxtime - toffset
   }
 
@@ -124,19 +123,17 @@ export default class DiveTable {
   maxDepth (time, spg) {
     let indext = DiveTable.pgToIndex(spg)
     let indexd = 11
-
     // skip depths in which dives from spg aren't allowed
     while (DiveTable.divet[27][indexd] + 4 < indext) {
       indexd--
     }
-
     // find depth which allows for BT at certain spg
     if (spg !== 'a') {
-      while (DiveTable.divet[DiveTable.divet[27][indexd] + 4][indexd] < time + DiveTable.divet[indext][indexd]) {
+      while (DiveTable.divet[DiveTable.divet[27][indexd] + 4][indexd] > time + DiveTable.divet[indext][indexd]) {
         indexd--
       }
     } else {
-      while (DiveTable.divet[DiveTable.divet[27][indexd] + 4][indexd] < time) {
+      while (DiveTable.divet[DiveTable.divet[27][indexd] + 4][indexd] > time) {
         indexd--
       }
     }
