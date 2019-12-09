@@ -71,6 +71,7 @@ export default class DiveTable {
   }
 
   static offSet (spg, depth) {
+    console.log('offset', spg)
     let ioffset = DiveTable.pgToIndex(spg)
     let toffset = 0
 
@@ -84,6 +85,7 @@ export default class DiveTable {
   diveFPG (spg, depth, bottomt) {
     let indexd = 0
     let indext = 1
+    console.log('dive fpg', spg)
     let offset = DiveTable.offSet(spg, depth)
     let ioffset = offset[0]
     let toffset = offset[1]
@@ -105,6 +107,7 @@ export default class DiveTable {
   // Returns maximum bottom time from starting pressure group at a certain depth
   maxBT (spg, depth) {
     let indexd = DiveTable.depthIndex(depth)
+    console.log('maxBt', spg)
     let offset = DiveTable.offSet(spg, depth)
     let toffset = offset[1]
     let maxtindex = DiveTable.divet[27][indexd] + 4
@@ -122,6 +125,7 @@ export default class DiveTable {
   }
 
   maxDepth (time, spg) {
+    console.log('maxDepth', spg)
     let indext = DiveTable.pgToIndex(spg)
     let indexd = 11
 

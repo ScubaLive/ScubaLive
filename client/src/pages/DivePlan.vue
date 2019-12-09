@@ -77,12 +77,12 @@
         :shape="'normal'"
         :opacity="0.8"
         :border-line="true"
-        :labels="[ '1Q', '2Q', '3Q', '4Q', '1Q', '2Q', '3Q', '4Q', '1Q', '2Q', '3Q', '4Q' ]"
+        :labels="labels"
         :axisFullMode="true"
         :values="values"
     >
         <note :text="'Area Chart'"></note>
-        <legends :names="[ 'Dive1', 'Dive2', 'Dive3' ]"></legends>
+        <legends :names="[ 'Dive1' ]"></legends>
         <guideline :tooltip-y="true"></guideline>
     </graph-area>
   </div>
@@ -136,8 +136,7 @@ export default {
     },
     updateDive3 () {
     },
-    calculateGraph (dive) {
-      let array = []
+    calculateGraph (dive, array) {
       array.push(0)
       array.push(-Math.abs(this.dives[dive].ddepth))
       array.push(-Math.abs(this.dives[dive].ddepth))
@@ -147,25 +146,54 @@ export default {
     }
   },
   computed: {
-    ...mapState('diveplan', ['selected', 'plans', 'dives']),
-    ...mapGetters('diveplan', ['plan', 'dive']),
+    ...mapState('diveplan', ['selected', 'plans', 'dives', 'SIs']),
+    ...mapGetters('diveplan', ['plan', 'dive', 'si']),
     values: function () {
       let chart = []
       const dive1 = this.plans[this.selected].dive1
-      console.log(dive1)
-      chart.push(this.calculateGraph(dive1))
-
-      if (this.plans[this.selected].dive2 !== null) {
+      chart = this.calculateGraph(dive1, chart)
+      console.log(this.plans[this.selected])
+      if (this.plans[this.selected].dive2) {
         const dive2 = this.plans[this.selected].dive2
-        chart.push(this.calculateGraph(dive2))
+        // console.log('graph dive 2', this.calculateGraph(dive2))
+        chart = this.calculateGraph(dive2, chart)
       }
 
-      if (this.plans[this.selected].dive3 !== null) {
+      if (this.plans[this.selected].dive3) {
         const dive3 = this.plans[this.selected].dive3
-        chart.push(this.calculateGraph(dive3))
+        chart = this.calculateGraph(dive3, chart)
       }
 
+      console.log('chart values', chart)
       return chart
+    },
+    labels: function () {
+      let labelArr = []
+      const dive1 = this.dives[this.plans[this.selected].dive1]
+      labelArr.push(0)
+      labelArr.push(dive1.bottomt)
+      labelArr.push(dive1.bottomt)
+      labelArr.push(dive1.bottomt)
+
+      if (this.plans[this.selected].dive2) {
+        const dive2 = this.dives[this.plans[this.selected].dive2]
+        labelArr.push(dive1.bottomt + this.SIs[this.plans[this.selected].si1].interval)
+        labelArr.push(dive2.bottomt + this.SIs[this.plans[this.selected].si1].interval)
+        labelArr.push(dive2.bottomt + this.SIs[this.plans[this.selected].si1].interval)
+        labelArr.push(dive2.bottomt + this.SIs[this.plans[this.selected].si1].interval)
+      }
+
+      if (this.plans[this.selected].dive3) {
+        const dive3 = this.dives[this.plans[this.selected].dive3]
+        labelArr.push(this.dives[this.plans[this.selected].dive2].bottomt + this.SIs[this.plans[this.selected].si2].interval)
+        labelArr.push(dive3.bottomt + this.SIs[this.plans[this.selected].si2].interval)
+        labelArr.push(dive3.bottomt + this.SIs[this.plans[this.selected].si2].interval)
+        labelArr.push(dive3.bottomt + this.SIs[this.plans[this.selected].si2].interval)
+      }
+
+      console.log('label', labelArr)
+
+      return labelArr
     }
   },
   mounted () {

@@ -211,6 +211,7 @@ const actions = {
     }
   },
   setDive ({ commit, state, dispatch }, payload) {
+    console.log('set dive', payload)
     let dive = state.dives[payload.id]
     let maxbt = divet.maxBT(payload.spg, payload.ddepth)
     let result = [payload.time, payload.depth, payload.spg, 'a', 0, 1]
