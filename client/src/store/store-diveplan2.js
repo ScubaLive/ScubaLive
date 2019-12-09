@@ -30,7 +30,7 @@ const state = {
     1000: {
       plan: 1000,
       bottomt: 0,
-      ddepth: 0,
+      ddepth: -100,
       diveid: 1,
       spg: 'a',
       fpg: 'a',
@@ -331,7 +331,8 @@ const getters = {
     if (plan.numdives >= 2) array.push(state.dives[plan.dive2])
     if (plan.numdives >= 3) array.push(state.dives[plan.dive3])
     return array
-  }
+  },
+  dive: state => diveId => state.dives[diveId]
 }
 
 export default {
