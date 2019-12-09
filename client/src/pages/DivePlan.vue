@@ -60,14 +60,14 @@
       </div>
       <div class="q-pa-md">
           <div class="q-col-gutter-md fit row wrap justify-center items-start content-start">
-              <div class="col-4" v-for="index in parseInt(diveCount - 1)" v-bind:key="index">
+              <div class="col-4" v-for="index in parseInt(this.planToSubmit.numdives - 1)" v-bind:key="index">
                   <surface-interval-cards :dive-number="index" @clicked="onClickChild"></surface-interval-cards>
               </div>
           </div>
       </div>
       <div class="q-pa-md">
         <div class="q-col-gutter-md fit row wrap justify-center items-start content-start">
-          <div class="col-4" v-for="index in parseInt(diveCount)" v-bind:key="index">
+          <div class="col-4" v-for="index in parseInt(this.planToSubmit.numdives)" v-bind:key="index">
             <dive-card :dive-number="index" @clicked="onClickChild"></dive-card>
           </div>
         </div>

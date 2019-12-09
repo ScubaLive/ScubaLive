@@ -73,7 +73,7 @@ const mutations = {
       id: num,
       name: 'New Plan',
       numdives: 1,
-      dive1: 1000,
+      dive1: null,
       dive2: null,
       dive3: null,
       si1: null,
@@ -86,8 +86,18 @@ const mutations = {
   newDive (state, did) {
     let startpg = 'a'
     let plan = state.plans[state.selected]
-    if (did === 2) startpg = plan.si1.fpg
-    if (did === 3) startpg = plan.si2.fpg
+    if (did === 1) {
+      plan.dive1 = state.cdive + 1
+    }
+    if (did === 2) {
+      startpg = state.dives[plan.dive1].fpg
+      console.log(startpg)
+      plan.dive2 = state.cdive + 1
+    }
+    if (did === 3) {
+      startpg = state.dives[plan.dive2].fpg
+      plan.dive3 = state.cdive + 1
+    }
 
     state.dives[state.cdive + 1] = {
       plan: state.selected,
@@ -277,27 +287,29 @@ const actions = {
   },
   setNum ({ commit, state, dispatch }, divenumber) {
     let plan = state.plans[state.selected]
-
+    let current = plan.numdives
+    console.log('test setNum called' + plan.numdives + '    ' + divenumber)
     if (divenumber > 0 && divenumber < 4) {
-      let diff = divenumber - plan.numdives
+      let diff = divenumber - current
 
       // increasing number of dives
       if (diff > 0) {
         while (diff > 0) {
-          commit('setNum', plan.numdives + 1)
+          commit('setNum', current + 1)
           if (plan.numdives === 2) {
-            if (plan.dive2 === undefined) {
-              commit('newSI', { id: 1, sdive: plan.dive1, fdive: plan.dive2 })
+            if (plan.dive2 === null) {
+              commit('newSI', { id: 1, sdive: plan.dive1, fdive: state.cdive + 1 })
               commit('newDive', 2)
             }
           }
-          if (this.numdives === 3) {
-            if (this.dive3 == null) {
-              commit('newSI', { id: 1, sdive: plan.dive2, fdive: plan.dive3 })
+          if (plan.numdives === 3) {
+            if (plan.dive3 == null) {
+              commit('newSI', { id: 2, sdive: plan.dive2, fdive: state.cdive + 1 })
               commit('newDive', 3)
             }
           }
           diff--
+          current++
         }
       }
       // decreasing number of dives
@@ -309,14 +321,9 @@ const actions = {
       console.log('Invalid number of dives')
     }
   },
-  newDive ({ commit }, diveid) {
-    commit('newDive', diveid)
-  },
-  newSI ({ commit }, payload) {
-    commit('newSI', payload)
-  },
   newPlan ({ commit }) {
     commit('newPlan')
+    commit('newDive', 1)
   }
 }
 
