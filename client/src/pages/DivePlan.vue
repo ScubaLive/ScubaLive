@@ -25,14 +25,13 @@
           v-model="planToSubmit.numdives"
           @change="updateNum(planToSubmit.numdives)"
           label="Number of Dives"
-          lazy-rules
           :rules="[
         val => val !== null && val !== '' || 'Please type a number',
         val => val > 0 && val <= 3 || 'Please enter a number between 1 and 3'
       ]"
       />
-      <q-btn color="primary" icon-right="description" label="Note" size="lg"/>
-        <q-btn-dropdown color="primary" label="Options" size="lg">
+      <note-button></note-button>
+      <q-btn-dropdown color="primary" label="Options" size="lg">
         <q-list>
           <q-item clickable v-close-popup @click="onItemClick">
             <q-item-section>
@@ -60,6 +59,11 @@
       </div>
       <div class="q-pa-md">
           <div class="q-col-gutter-md fit row wrap justify-center items-start content-start">
+              <div class="col-4">
+                  <surface-interval-cards :dive-number="1" @clicked="onClickChild" v-if="planToSubmit.numdives >= 2"></surface-interval-cards>
+              </div>
+              <div class="col-4">
+                <surface-interval-cards :dive-number="2" @clicked="onClickChild" v-if="planToSubmit.numdives >= 3"></surface-interval-cards>
               <div class="col-4" v-for="index in parseInt(this.planToSubmit.numdives - 1)" v-bind:key="index">
                   <surface-interval-cards :dive-number="index" @clicked="onClickChild"></surface-interval-cards>
               </div>
@@ -67,6 +71,14 @@
       </div>
       <div class="q-pa-md">
         <div class="q-col-gutter-md fit row wrap justify-center items-start content-start">
+          <div class="col-4">
+            <dive-card :dive-number="1" @clicked="onClickChild" v-if="planToSubmit.numdives >= 1" :dive="getDiveInfo(planToSubmit.dive1)" @update-dive="updateDive1"></dive-card>
+          </div>
+          <div class="col-4">
+            <dive-card :dive-number="2" :dive="getDiveInfo(planToSubmit.dive2)" @clicked="onClickChild" v-if="planToSubmit.numdives >= 2" @update-dive="updateDive2"></dive-card>
+          </div>
+          <div class="col-4">
+            <dive-card :dive-number="3" @clicked="onClickChild" :dive="getDiveInfo(planToSubmit.dive3)" v-if="planToSubmit.numdives >= 3" @update-dive="updateDive3"></dive-card>
           <div class="col-4" v-for="index in parseInt(this.planToSubmit.numdives)" v-bind:key="index">
             <dive-card :dive-number="index" @clicked="onClickChild"></dive-card>
           </div>
@@ -77,10 +89,11 @@
           :axis-full-mode="true"
           :shape="'normal'"
           :opacity="0.8"
-          :borderline="true"
+          :border-line="true"
           :labels="[ '1Q', '2Q', '3Q', '4Q', '1Q', '2Q', '3Q', '4Q', '1Q', '2Q', '3Q', '4Q' ]"
           :axisFullMode="true"
-          :values="values">
+          :values="values"
+      >
           <note :text="'Area Chart'"></note>
           <legends :names="[ 'Dive1', 'Dive2', 'Dive3' ]"></legends>
           <guideline :tooltip-y="true"></guideline>
@@ -89,26 +102,23 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import DiveCard from '../components/DiveCard'
 import SurfaceIntervalCards from '../components/SurfaceIntervalCards'
+import NoteButton from '../components/NoteButton'
 export default {
   name: 'DivePlan',
-  components: { SurfaceIntervalCards, DiveCard },
+  components: { NoteButton, SurfaceIntervalCards, DiveCard },
   data () {
     return {
       planName: 'Dive1',
       altitude: null,
-      diveCount: 1,
       accept: false,
       planToSubmit: {}
     }
   },
   methods: {
     ...mapActions('diveplan', ['setName', 'setNum']),
-    ...mapActions({
-      initDiveCard: 'DiveCard/initDiveCard'
-    }),
     onItemClick () {
       console.log('Clicked on an Item')
     },
@@ -130,56 +140,59 @@ export default {
         color: 'green',
         position: 'top'
       })
+    },
+    updateDive1 () {
+
+    },
+    updateDive2 () {
+
+    },
+    updateDive3 () {
+    },
+    getDiveInfo (diveId) {
+      return this.dive(diveId)
+    },
+    calculateGraph (dive) {
+      let array = []
+      array.push(0)
+      array.push(-Math.abs(dive.ddepth))
+      array.push(-Math.abs(dive.ddepth))
+      array.push(0)
+
+      return array
     }
   },
   computed: {
     ...mapState('diveplan', ['selected', 'plans']),
-    ...mapGetters('diveplan', ['dives', 'plan']),
-    ...mapState({
-      diveValues: state => state.DiveCard.data
-    }),
+    ...mapGetters('diveplan', ['dives', 'plan', 'dive']),
     values: function () {
       let chart = []
 
-      Object.keys(this.diveValues).forEach(value => {
-        const diveCard = this.diveValues[value]
-        chart.push(0)
-        chart.push(-Math.abs(diveCard.maxDepth))
-        chart.push(-Math.abs(diveCard.maxDepth))
-        chart.push(0)
-      })
+      const dive1 = this.getDiveInfo(this.planToSubmit.dive1)
+      chart.push(this.calculateGraph(dive1))
 
-      let array = []
-      array.push(chart)
-      return array
+      if (this.planToSubmit.dive2) {
+        const dive2 = this.getDiveInfo(this.planToSubmit.dive2)
+        chart.push(this.calculateGraph(dive2))
+      }
+
+      if (this.planToSubmit.dive3) {
+        const dive3 = this.getDiveInfo(this.planToSubmit.dive3)
+        chart.push(this.calculateGraph(dive3))
+      }
+
+      return chart
     }
   },
   mounted () {
+    console.log('** PLAN ***', this.plan)
+
     this.planToSubmit = Object.assign({}, this.plan)
     console.log(this.planToSubmit.name)
   },
   watch: {
     'selected' (val) {
       this.planToSubmit = Object.assign({}, this.plans[this.selected])
-    },
-    diveValues: {
-      handler: function (newValue) {
-        let chart = []
-
-        Object.keys(this.diveValues).forEach(value => {
-          const diveCard = this.diveValues[value]
-          chart.push(0)
-          chart.push(-Math.abs(diveCard.maxDepth))
-          chart.push(-Math.abs(diveCard.maxDepth))
-          chart.push(0)
-        })
-
-        let array = []
-        array.push(chart)
-        Object.assign(this.values, array)
-        console.log(this.values)
-      },
-      deep: true
     }
 
   }
