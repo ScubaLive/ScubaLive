@@ -156,7 +156,6 @@ export default {
         chart = this.calculateGraph(dive3, chart)
       }
 
-      console.log('chart values', chart)
       return chart
     },
     labels: function () {
@@ -182,8 +181,6 @@ export default {
         labelArr.push(dive3.bottomt + this.SIs[this.plans[this.selected].si2].interval)
         labelArr.push(dive3.bottomt + this.SIs[this.plans[this.selected].si2].interval)
       }
-
-      console.log('label', labelArr)
 
       return labelArr
     }
