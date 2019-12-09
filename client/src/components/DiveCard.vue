@@ -1,6 +1,6 @@
 <template>
-    <q-card class="my-card">
-      <q-card-section class="bg-teal text-white">
+    <q-card class="my-card" :active="safe" active-class="bg-red-1 text-grey-8">
+      <q-card-section class="bg-teal text-white" >
         <div class="text-h6">Dive #{{diveNumber}}</div>
       </q-card-section>
       <q-input
@@ -56,6 +56,7 @@ export default {
   data () {
     return {
       id: 0,
+      safe: true,
       diveToSubmit: {}
     }
   },

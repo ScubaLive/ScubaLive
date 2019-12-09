@@ -258,9 +258,8 @@ const actions = {
     commit('setDiveResult', { id: payload.id, result: result })
   },
   updateInterval ({ commit, state, dispatch }, payload) {
-    let pack = payload
+    let pack = Object.assign({}, payload)
     let si = state.SIs[payload.id]
-    console.log(si)
     if (payload.interval !== si.interval || payload.spg !== si.spg) {
       pack.spg = state.dives[si.sdive].fpg
       pack.fpg = surfacet.getEndingPressureGroup(pack.spg, payload.interval)
@@ -268,18 +267,19 @@ const actions = {
     commit('setSI', pack)
     dispatch('setDive', { id: si.fdive, time: null, depth: null, spg: pack.fpg })
   },
-  setMinInterval ({ commit, state, dispatch }, si) {
-    let tsi = state.SIs[si]
-    commit('setSIInterval', { id: si, interval: surfacet.getSurfaceIntervalTime(state.dives[tsi.sdive].fpg, divet.minPG(state.dives[tsi.fdive].bottomt, state.dives[state.SIs[si].fdive].ddepth))[0] })
-    dispatch('updateInterval', { id: si, time: null })
+  setMinInterval ({ commit, state, dispatch }, payload) {
+    let tsi = state.SIs[payload.id]
+    let pack = Object.assign({}, payload)
+    pack.interval = surfacet.getSurfaceIntervalTime(state.dives[tsi.sdive].fpg, divet.minPG(state.dives[tsi.fdive].bottomt, state.dives[state.SIs[payload.id].fdive].ddepth))[0]
+    commit('setSIInterval', pack)
+    dispatch('updateInterval', pack)
   },
   updateSI ({ commit, state, dispatch }, payload) {
     let plan = state.plans[state.selected]
-    let pack = payload
-    console.log(payload)
+    let pack = Object.assign({}, payload)
     if (payload.siid === 1 || payload.siid === 2) {
       dispatch('updateInterval', pack)
-      if (payload.interval < 0) dispatch('setMinInterval', pack.id)
+      if (payload.interval < 0) dispatch('setMinInterval', payload)
       if (payload.siid === 1 && plan.si2 !== null) {
         pack = Object.assign({}, state.SIs[plan.si2])
         dispatch('updateInterval', pack)

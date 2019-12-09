@@ -139,7 +139,7 @@ export default {
   },
   computed: {
     ...mapState('diveplan', ['selected', 'plans', 'dives', 'SIs']),
-    ...mapGetters('diveplan', ['plan', 'dive', 'si']),
+    ...mapGetters('diveplan', ['plan', 'dive']),
     values: function () {
       let chart = []
       const dive1 = this.plans[this.selected].dive1
