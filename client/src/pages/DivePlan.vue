@@ -64,6 +64,8 @@
               </div>
               <div class="col-4">
                 <surface-interval-cards :dive-number="2" @clicked="onClickChild" v-if="planToSubmit.numdives >= 3"></surface-interval-cards>
+              <div class="col-4" v-for="index in parseInt(this.planToSubmit.numdives - 1)" v-bind:key="index">
+                  <surface-interval-cards :dive-number="index" @clicked="onClickChild"></surface-interval-cards>
               </div>
           </div>
       </div>
@@ -77,6 +79,8 @@
           </div>
           <div class="col-4">
             <dive-card :dive-number="3" @clicked="onClickChild" :dive="getDiveInfo(planToSubmit.dive3)" v-if="planToSubmit.numdives >= 3" @update-dive="updateDive3"></dive-card>
+          <div class="col-4" v-for="index in parseInt(this.planToSubmit.numdives)" v-bind:key="index">
+            <dive-card :dive-number="index" @clicked="onClickChild"></dive-card>
           </div>
         </div>
       </div>
