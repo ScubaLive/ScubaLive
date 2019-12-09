@@ -33,16 +33,17 @@
 
     <!--Vuex will store information about the login user so that in can be used in multiple components once-->
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-2">
-      <q-list>
+      <q-list hightlight selector>
         <plan
           v-for="plan in plans"
           :key="plan.id"
           :plan="plan"
           :id="plan.id"
           :to="{name: 'DivePlan'}"
+          selected
         ></plan>
       </q-list>
-      <q-btn round color="primary" icon="add" />
+      <q-btn round color="primary" icon="add" @click="addPlan"/>
     </q-drawer>
 
     <q-page-container>
@@ -67,9 +68,12 @@ export default {
   },
   methods: {
     ...mapActions('auth', ['logoutUser']),
-    ...mapActions('diveplan', ['setSelect']),
+    ...mapActions('diveplan', ['setSelect', 'newPlan']),
     OnClick (id) {
       console.log(id)
+    },
+    addPlan () {
+      this.newPlan()
     }
   },
   components: {

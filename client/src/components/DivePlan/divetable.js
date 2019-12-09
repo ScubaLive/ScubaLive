@@ -1,5 +1,5 @@
 export default class DiveTable {
-  divet = [
+  static divet = [
     [10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40, 42],
     [10, 9, 8, 7, 6, 6, 5, 4, 3, 3, -1, -1],
     [20, 17, 15, 13, 11, 10, 9, 8, 6, 5, 5, 4],
@@ -30,18 +30,18 @@ export default class DiveTable {
     [22, 22, 21, 20, 19, 17, 15, 13, 10, 7, 3, 2]
   ]
 
-  indexToPG (index) {
+  static indexToPG (index) {
     let pg = 'a'
 
     if (index >= 1 && index <= 26) {
       index = index + 64
-      pg = index.fromCharCode()
+      pg = String.fromCharCode(index)
     }
 
     return pg
   }
 
-  pgToIndex (pg) {
+  static pgToIndex (pg) {
     let index = 0
     pg = pg.toString()
 
@@ -54,7 +54,7 @@ export default class DiveTable {
     return index
   }
 
-  depthIndex (depth) {
+  static depthIndex (depth) {
     let index = 0
 
     for (;DiveTable.divet[0][index] < depth; index++) {}
@@ -62,7 +62,7 @@ export default class DiveTable {
     return index
   }
 
-  timeIndex (bottomt, indexd) {
+  static timeIndex (bottomt, indexd) {
     let index = 1
 
     for (;DiveTable.divet[index][indexd] < bottomt; index++) {}
@@ -70,7 +70,7 @@ export default class DiveTable {
     return index
   }
 
-  offSet (spg, depth) {
+  static offSet (spg, depth) {
     let ioffset = DiveTable.pgToIndex(spg)
     let toffset = 0
 

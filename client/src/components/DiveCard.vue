@@ -3,10 +3,15 @@
       <q-card-section class="bg-teal text-white">
         <div class="text-h6">Dive #{{diveNumber}}</div>
       </q-card-section>
-      <q-input filled
-               hint="Max Depth (meters)" type="number" :rules="[
+      <q-input
+        filled
+        hint="Max Depth (meters)"
+        type="number"
+        v-model="diveToSubmit.ddepth"
+        @change="updateDepth(diveToSubmit)"
+        :rules="[
           val => val !== null && val !== '' || 'Please type a number',
-          val => val > 0 && val <= 40 || 'Please enter a number between 1 and 40'
+          val => val > 0 && val <= 40 || 'Please enter a number between 1 and 40',
         ]">
         <template v-slot:append>
           <q-icon name="info">
@@ -16,7 +21,16 @@
           </q-icon>
         </template>
       </q-input>
-      <q-input filled hint="Bottom Time (minutes)" type="number">
+      <q-input
+        filled
+        hint="Bottom Time (minutes)"
+        type="number"
+        v-model="diveToSubmit.bottomt"
+        @change="updateTime(diveToSubmit)"
+        :rules="[
+          val => val !== null && val !== '' || 'Please type a number',
+          val => val >= 0 || 'Please enter a positive number',
+        ]">
         <template v-slot:append>
           <q-icon name="info">
             <q-tooltip :delay="500" anchor="center right" self="center left" :offset="[10, 10]">
@@ -30,25 +44,39 @@
 
 <script>
 // import DiveValues from 'DiveValues';
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapState } from 'vuex'
 export default {
   name: 'DiveCard',
   props: {
     diveNumber: {
       type: Number,
       required: true
-    },
-    dive: {
-      type: Object,
-      required: true
     }
   },
   data () {
     return {
+      id: 0,
+      diveToSubmit: {}
     }
   },
   methods: {
-
+    ...mapActions('diveplan', ['updateDive']),
+    updateDepth (payload) {
+      this.updateDive(payload)
+    },
+    updateTime (payload) {
+      this.updateDive(payload)
+    }
+  },
+  mounted () {
+    console.log(this.id)
+    if (this.diveNumber === 1) this.id = this.plans[this.selected].dive1
+    if (this.diveNumber === 2) this.id = this.plans[this.selected].dive2
+    if (this.diveNumber === 3) this.id = this.plans[this.selected].dive3
+    this.diveToSubmit = Object.assign({}, this.dives[this.id])
+  },
+  computed: {
+    ...mapState('diveplan', ['selected', 'plans', 'dives'])
   }
 }
 </script>

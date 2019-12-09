@@ -53,51 +53,38 @@
         </q-list>
       </q-btn-dropdown>
     </div>
-      <div class="row full-width row wrap justify-start items-start content-start">
-        <q-btn v-on:click="save" color="primary" icon-right="save" label="Save" size="sm"/>
-        <q-btn color="primary" icon-right="delete" label="Delete" size="sm"/>
-      </div>
-      <div class="q-pa-md">
-          <div class="q-col-gutter-md fit row wrap justify-center items-start content-start">
-              <div class="col-4">
-                  <surface-interval-cards :dive-number="1" @clicked="onClickChild" v-if="planToSubmit.numdives >= 2"></surface-interval-cards>
-              </div>
-              <div class="col-4">
-                <surface-interval-cards :dive-number="2" @clicked="onClickChild" v-if="planToSubmit.numdives >= 3"></surface-interval-cards>
-              <div class="col-4" v-for="index in parseInt(this.planToSubmit.numdives - 1)" v-bind:key="index">
-                  <surface-interval-cards :dive-number="index" @clicked="onClickChild"></surface-interval-cards>
-              </div>
-          </div>
-      </div>
-      <div class="q-pa-md">
+    <div class="row full-width row wrap justify-start items-start content-start">
+      <q-btn v-on:click="save" color="primary" icon-right="save" label="Save" size="sm"/>
+      <q-btn color="primary" icon-right="delete" label="Delete" size="sm"/>
+    </div>
+    <div class="q-pa-md">
         <div class="q-col-gutter-md fit row wrap justify-center items-start content-start">
-          <div class="col-4">
-            <dive-card :dive-number="1" @clicked="onClickChild" v-if="planToSubmit.numdives >= 1" :dive="getDiveInfo(planToSubmit.dive1)" @update-dive="updateDive1"></dive-card>
-          </div>
-          <div class="col-4">
-            <dive-card :dive-number="2" :dive="getDiveInfo(planToSubmit.dive2)" @clicked="onClickChild" v-if="planToSubmit.numdives >= 2" @update-dive="updateDive2"></dive-card>
-          </div>
-          <div class="col-4">
-            <dive-card :dive-number="3" @clicked="onClickChild" :dive="getDiveInfo(planToSubmit.dive3)" v-if="planToSubmit.numdives >= 3" @update-dive="updateDive3"></dive-card>
-          <div class="col-4" v-for="index in parseInt(this.planToSubmit.numdives)" v-bind:key="index">
-            <dive-card :dive-number="index" @clicked="onClickChild"></dive-card>
-          </div>
+            <div class="col-4" v-for="index in parseInt(this.plans[this.selected].numdives - 1)" v-bind:key="index">
+                <surface-interval-cards :dive-number="index" @clicked="onClickChild"></surface-interval-cards>
+            </div>
+        </div>
+    </div>
+    <div class="q-pa-md">
+      <div class="q-col-gutter-md row wrap justify-center items-start content-start">
+        <div class="col-4" v-for="index in parseInt(this.plans[this.selected].numdives)" v-bind:key="index">
+          <dive-card :diveNumber="index" @clicked="onClickChild"></dive-card>
         </div>
       </div>
-      <graph-area
-          :height="500"
-          :axis-full-mode="true"
-          :shape="'normal'"
-          :opacity="0.8"
-          :border-line="true"
-          :labels="[ '1Q', '2Q', '3Q', '4Q', '1Q', '2Q', '3Q', '4Q', '1Q', '2Q', '3Q', '4Q' ]"
-          :axisFullMode="true"
-          :values="values"
-      >
-          <note :text="'Area Chart'"></note>
-          <legends :names="[ 'Dive1', 'Dive2', 'Dive3' ]"></legends>
-          <guideline :tooltip-y="true"></guideline>
-      </graph-area>
+    </div>
+    <graph-area
+        :height="500"
+        :axis-full-mode="true"
+        :shape="'normal'"
+        :opacity="0.8"
+        :border-line="true"
+        :labels="[ '1Q', '2Q', '3Q', '4Q', '1Q', '2Q', '3Q', '4Q', '1Q', '2Q', '3Q', '4Q' ]"
+        :axisFullMode="true"
+        :values="values"
+    >
+        <note :text="'Area Chart'"></note>
+        <legends :names="[ 'Dive1', 'Dive2', 'Dive3' ]"></legends>
+        <guideline :tooltip-y="true"></guideline>
+    </graph-area>
   </div>
 </template>
 
@@ -149,35 +136,32 @@ export default {
     },
     updateDive3 () {
     },
-    getDiveInfo (diveId) {
-      return this.dive(diveId)
-    },
     calculateGraph (dive) {
       let array = []
       array.push(0)
-      array.push(-Math.abs(dive.ddepth))
-      array.push(-Math.abs(dive.ddepth))
+      array.push(-Math.abs(this.dives[dive].ddepth))
+      array.push(-Math.abs(this.dives[dive].ddepth))
       array.push(0)
 
       return array
     }
   },
   computed: {
-    ...mapState('diveplan', ['selected', 'plans']),
-    ...mapGetters('diveplan', ['dives', 'plan', 'dive']),
+    ...mapState('diveplan', ['selected', 'plans', 'dives']),
+    ...mapGetters('diveplan', ['plan', 'dive']),
     values: function () {
       let chart = []
-
-      const dive1 = this.getDiveInfo(this.planToSubmit.dive1)
+      const dive1 = this.plans[this.selected].dive1
+      console.log(dive1)
       chart.push(this.calculateGraph(dive1))
 
-      if (this.planToSubmit.dive2) {
-        const dive2 = this.getDiveInfo(this.planToSubmit.dive2)
+      if (this.plans[this.selected].dive2 !== null) {
+        const dive2 = this.plans[this.selected].dive2
         chart.push(this.calculateGraph(dive2))
       }
 
-      if (this.planToSubmit.dive3) {
-        const dive3 = this.getDiveInfo(this.planToSubmit.dive3)
+      if (this.plans[this.selected].dive3 !== null) {
+        const dive3 = this.plans[this.selected].dive3
         chart.push(this.calculateGraph(dive3))
       }
 
@@ -185,10 +169,7 @@ export default {
     }
   },
   mounted () {
-    console.log('** PLAN ***', this.plan)
-
     this.planToSubmit = Object.assign({}, this.plan)
-    console.log(this.planToSubmit.name)
   },
   watch: {
     'selected' (val) {

@@ -1,4 +1,6 @@
 import { surfacet, divet } from '../boot/firebase'
+import Vue from 'vue'
+import { uid } from 'quasar'
 
 const state = {
   planid: [1000, 1001],
@@ -29,8 +31,9 @@ const state = {
   dives: {
     1000: {
       plan: 1000,
+      id: 1000,
       bottomt: 0,
-      ddepth: -100,
+      ddepth: 40,
       diveid: 1,
       spg: 'a',
       fpg: 'a',
@@ -40,6 +43,7 @@ const state = {
     },
     1001: {
       plan: 1001,
+      id: 1001,
       bottomt: 0,
       ddepth: 0,
       diveid: 1,
@@ -69,7 +73,7 @@ const mutations = {
   },
   newPlan (state) {
     let num = state.cplan + 1
-    state.plans[num] = {
+    let payload = {
       id: num,
       name: 'New Plan',
       numdives: 1,
@@ -80,8 +84,9 @@ const mutations = {
       si2: null,
       safe: true
     }
+    Vue.set(state.plans, num, payload)
     state.cplan = num
-    state.selected = num
+    Vue.set(state, 'selected', num)
   },
   newDive (state, did) {
     let startpg = 'a'
@@ -103,6 +108,7 @@ const mutations = {
       plan: state.selected,
       bottomt: 0,
       ddepth: 0,
+      id: state.cdive + 1,
       diveid: did,
       spg: startpg,
       fpg: startpg,
@@ -139,7 +145,7 @@ const mutations = {
   },
   setDiveBT (state, payload) {
     let dive = state.dives[payload.id]
-    dive.bottomt = payload.time
+    dive.bottomt = parseInt(payload.time)
   },
   setDiveDepth (state, payload) {
     let dive = state.dives[payload.id]
@@ -182,39 +188,31 @@ const mutations = {
 
 const actions = {
   updateDive ({ commit, state, dispatch }, payload) {
-    let pack = {
-      id: 0,
-      depth: payload.depth,
-      spg: 'a',
-      si: null,
-      time: payload.time
-    }
+    let pack = payload
     let plan = state.plans[state.selected]
+    pack.time = pack.bottomt
+    pack.depth = pack.ddepth
+    let si = null
 
-    if (payload.diveid > 0 && payload.diveid < 4 && payload.diveid <= this.numdives) {
-      if (payload.diveid === 1) {
-        pack.id = plan.dive1
-        if (this.numdives > 1) pack.si = plan.si1
-      }
+    if (payload.diveid > 0 && payload.diveid < 4 && payload.diveid <= plan.numdives) {
       if (payload.diveid === 2) {
-        pack.id = plan.dive2
-        pack.spg = this.si1.fpg
-        if (this.numdives === 3) pack.si = plan.si2
+        pack.spg = plan.si1.fpg
+        if (this.numdives === 2) si = plan.si1
       }
       if (payload.diveid === 3) {
-        pack.id = plan.dive3
         pack.spg = plan.si2.fpg
+        if (this.numdives === 3) si = plan.si2
       }
       dispatch('setDive', pack)
-      if (pack.si != null) dispatch('updateInterval', pack)
-      dispatch('updateSafe')
+      if (si != null) dispatch('updateInterval', { id: si, time: null })
+      commit('updateSafe')
     } else {
       console.log('Invalid diveid')
     }
   },
   setDive ({ commit, state, dispatch }, payload) {
     let dive = state.dives[payload.id]
-    let maxbt = divet.maxBT(payload.spg, payload.depth)
+    let maxbt = divet.maxBT(payload.spg, payload.ddepth)
     let result = [payload.time, payload.depth, payload.spg, 'a', 0, 1]
     commit('setDiveResult', { id: payload.id, result: result })
     if (payload.time === null) payload.time = dive.bottomt
@@ -225,13 +223,14 @@ const actions = {
     commit('setDiveBT', payload)
     result[2] = payload.spg
 
-    if (maxbt < payload.time || (dive.payload.diveid > 1 && payload.spg === 'a')) {
+    if (maxbt < payload.time || (payload.diveid > 1 && payload.spg === 'a')) {
+      commit('setDiveSafe', { id: payload.id, safe: false })
       dive.safe = false
       result[0] = maxbt
       result[1] = divet.maxDepth(payload.time, payload.spg)
       result[5] = 0
       // find new spg if possible
-      if (payload.startpg !== 'a') {
+      if (payload.spg !== 'a') {
         if (divet.maxBT('a', payload.depth) > payload.time) {
           result[2] = divet.minPG(payload.time, payload.depth)
           result[3] = divet.diveFPG(result[2], payload.depth, payload.time)
@@ -239,10 +238,12 @@ const actions = {
         }
       }
     } else {
-      dive.fpg = divet.diveFPG(payload.spg, payload.depth, payload.time)
-      dive.result[3] = dive.fpg
-      dive.ssrequired = divet.ssTest(dive.fpg, payload.depth)
-      dive.result[4] = dive.ssrequired ? 1 : 0
+      let tfpg = divet.diveFPG(payload.spg, payload.depth, payload.time)
+      commit('setDiveFPG', { id: payload.id, fpg: tfpg })
+      result[3] = tfpg
+      let tss = divet.ssTest(dive.fpg, payload.depth)
+      commit('setDiveSS', { id: payload.id, ssrequired: tss })
+      result[4] = tss ? 1 : 0
     }
     commit('setDiveResult', { id: payload.id, result: result })
   },
@@ -295,7 +296,7 @@ const actions = {
       // increasing number of dives
       if (diff > 0) {
         while (diff > 0) {
-          commit('setNum', current + 1)
+          commit('setNum', parseInt(current) + 1)
           if (plan.numdives === 2) {
             if (plan.dive2 === null) {
               commit('newSI', { id: 1, sdive: plan.dive1, fdive: state.cdive + 1 })
@@ -311,10 +312,8 @@ const actions = {
           diff--
           current++
         }
-      }
-      // decreasing number of dives
-      if (diff < 0) {
-        commit('setNum', divenumber)
+      } else if (diff < 0) {
+        commit('setNum', parseInt(divenumber))
         commit('updateSafe')
       }
     } else {
