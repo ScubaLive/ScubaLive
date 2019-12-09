@@ -1,7 +1,7 @@
 <template>
     <div>
-        <q-btn color="primary" icon-right="description" label="Note" size="lg" @click="toolbar = true"/>
-        <q-dialog v-model="toolbar">
+        <q-btn color="primary" icon-right="description" label="Note" size="lg" @click="notesModal = true"/>
+        <q-dialog v-model="notesModal">
             <q-card style="width: 500px">
                 <q-toolbar>
                     <q-toolbar-title><span class="text-weight-bold">Notes</span></q-toolbar-title>
@@ -17,14 +17,20 @@
                         <q-input
                             type="date"
                             filled
-                            v-model="task"
+                            v-model="date"
                             label="Date"
                         />
                         <q-input
                             filled
                             type="text"
-                            v-model="goal"
+                            v-model="location"
                             label="Location"
+                        />
+                        <q-input
+                          filled
+                          type="textarea"
+                          v-model="notes"
+                          label="Notes"
                         />
                         <div>
                             <q-btn label="Submit" type="submit" color="primary"/>
@@ -42,36 +48,27 @@ export default {
   name: 'NoteButton',
   data () {
     return {
-      todoList: [],
-      toolbar: false,
-      task: null,
-      goal: null,
-      category: {
-        label: null,
-        value: null,
-        icon: null
-      }
+      notesModal: false,
+      date: null,
+      location: null,
+      notes: null
     }
   },
   methods: {
     onSubmit () {
-      // let todo = {
-      //   task: null,
-      //   goal: null,
-      //   category: null
-      // }
       this.$q.notify({
         color: 'green-4',
         textColor: 'white',
         icon: 'cloud_done',
-        message: 'Task Added'
+        message: 'Note Saved',
+        position: 'top'
       })
     },
 
     onReset () {
-      this.task = null
-      this.goal = null
-      this.category = null
+      this.date = null
+      this.location = null
+      this.notes = null
     }
   }
 }
