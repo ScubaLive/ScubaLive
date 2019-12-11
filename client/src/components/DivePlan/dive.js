@@ -13,7 +13,6 @@ export class Dive {
   }
 
   updateDive (startpg, time, depth) {
-    console.log('dive update', startpg)
     let maxbt = DiveTable.maxBT(startpg, depth)
     this.result = [time, depth, startpg, 'a', 0, 1]
 

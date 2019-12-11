@@ -82,7 +82,7 @@
         :values="values"
     >
         <note :text="'Area Chart'"></note>
-        <legends :names="[ 'Dive1' ]"></legends>
+        <legends :names="[ 'Dive Plan' ]"></legends>
         <guideline :tooltip-y="true"></guideline>
     </graph-area>
   </div>
@@ -127,24 +127,24 @@ export default {
         position: 'top'
       })
     },
-    calculateGraph (dive) {
-      let array = []
-      array.push(0)
-      array.push(-Math.abs(this.dives[dive].ddepth))
-      array.push(-Math.abs(this.dives[dive].ddepth))
-      array.push(0)
+    calculateGraph (dive, chart) {
+      chart.push(0)
+      chart.push(-Math.abs(this.dives[dive].ddepth))
+      chart.push(-Math.abs(this.dives[dive].ddepth))
+      chart.push(0)
 
-      return array
+      return chart
     }
   },
   computed: {
     ...mapState('diveplan', ['selected', 'plans', 'dives', 'SIs']),
-    ...mapGetters('diveplan', ['plan', 'dive', 'si']),
+    ...mapGetters('diveplan', ['plan']),
     values: function () {
       let chart = []
+
       const dive1 = this.plans[this.selected].dive1
       chart = this.calculateGraph(dive1, chart)
-      console.log(this.plans[this.selected])
+
       if (this.plans[this.selected].dive2) {
         const dive2 = this.plans[this.selected].dive2
         // console.log('graph dive 2', this.calculateGraph(dive2))
@@ -161,25 +161,31 @@ export default {
     labels: function () {
       let labelArr = []
       const dive1 = this.dives[this.plans[this.selected].dive1]
+      let dive2 = null
+      let dive3 = null
+      let previousDiveTime = null
+      let previousDiveTime2 = null
       labelArr.push(0)
-      labelArr.push(dive1.bottomt)
+      labelArr.push(0)
       labelArr.push(dive1.bottomt)
       labelArr.push(dive1.bottomt)
 
       if (this.plans[this.selected].dive2) {
-        const dive2 = this.dives[this.plans[this.selected].dive2]
-        labelArr.push(dive1.bottomt + this.SIs[this.plans[this.selected].si1].interval)
-        labelArr.push(dive2.bottomt + this.SIs[this.plans[this.selected].si1].interval)
-        labelArr.push(dive2.bottomt + this.SIs[this.plans[this.selected].si1].interval)
-        labelArr.push(dive2.bottomt + this.SIs[this.plans[this.selected].si1].interval)
+        dive2 = this.dives[this.plans[this.selected].dive2]
+        previousDiveTime = parseInt(dive1.bottomt)
+        labelArr.push(parseInt(dive1.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
+        labelArr.push(parseInt(dive1.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
+        labelArr.push(previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
+        labelArr.push(previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
+        previousDiveTime2 = previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval)
       }
 
       if (this.plans[this.selected].dive3) {
-        const dive3 = this.dives[this.plans[this.selected].dive3]
-        labelArr.push(this.dives[this.plans[this.selected].dive2].bottomt + this.SIs[this.plans[this.selected].si2].interval)
-        labelArr.push(dive3.bottomt + this.SIs[this.plans[this.selected].si2].interval)
-        labelArr.push(dive3.bottomt + this.SIs[this.plans[this.selected].si2].interval)
-        labelArr.push(dive3.bottomt + this.SIs[this.plans[this.selected].si2].interval)
+        dive3 = this.dives[this.plans[this.selected].dive3]
+        labelArr.push(previousDiveTime2 + parseInt(this.SIs[this.plans[this.selected].si2].interval))
+        labelArr.push(previousDiveTime2 + parseInt(this.SIs[this.plans[this.selected].si2].interval))
+        labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval))
+        labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval))
       }
 
       return labelArr
