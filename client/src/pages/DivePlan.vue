@@ -161,26 +161,31 @@ export default {
     labels: function () {
       let labelArr = []
       const dive1 = this.dives[this.plans[this.selected].dive1]
+      let dive2 = null
+      let dive3 = null
+      let previousDiveTime = null
+      let previousDiveTime2 = null
       labelArr.push(0)
       labelArr.push(0)
       labelArr.push(dive1.bottomt)
       labelArr.push(dive1.bottomt)
 
       if (this.plans[this.selected].dive2) {
-        const dive2 = this.dives[this.plans[this.selected].dive2]
-        const previousDiveTime = parseInt(dive1.bottomt)
+        dive2 = this.dives[this.plans[this.selected].dive2]
+        previousDiveTime = parseInt(dive1.bottomt)
         labelArr.push(parseInt(dive1.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
         labelArr.push(parseInt(dive1.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
         labelArr.push(previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
         labelArr.push(previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
+        previousDiveTime2 = previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval)
       }
 
       if (this.plans[this.selected].dive3) {
-        const dive3 = this.dives[this.plans[this.selected].dive3]
-        labelArr.push(this.dives[this.plans[this.selected].dive2].bottomt + this.SIs[this.plans[this.selected].si2].interval)
-        labelArr.push(dive3.bottomt + this.SIs[this.plans[this.selected].si2].interval)
-        labelArr.push(dive3.bottomt + this.SIs[this.plans[this.selected].si2].interval)
-        labelArr.push(dive3.bottomt + this.SIs[this.plans[this.selected].si2].interval)
+        dive3 = this.dives[this.plans[this.selected].dive3]
+        labelArr.push(previousDiveTime2 + parseInt(this.SIs[this.plans[this.selected].si2].interval))
+        labelArr.push(previousDiveTime2 + parseInt(this.SIs[this.plans[this.selected].si2].interval))
+        labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval))
+        labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval))
       }
 
       return labelArr
