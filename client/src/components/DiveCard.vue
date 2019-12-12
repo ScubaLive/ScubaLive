@@ -1,6 +1,6 @@
 <template>
     <q-card class="my-card" :active="safe" active-class="bg-red-1 text-grey-8">
-      <q-card-section class="bg-teal text-white" >
+      <q-card-section :class="[diveToSubmit.safe ? 'bg-teal' : 'bg-red', 'text-white']">
         <div class="text-h6">Dive #{{diveNumber}}</div>
       </q-card-section>
       <q-input
@@ -64,19 +64,47 @@ export default {
     ...mapActions('diveplan', ['updateDive']),
     updateDepth (payload) {
       this.updateDive(payload)
+      this.updateDiveToSubmit()
     },
     updateTime (payload) {
       this.updateDive(payload)
+      this.updateDiveToSubmit()
+    },
+    updateDiveToSubmit () {
+      if (this.diveNumber === 1) this.id = this.plans[this.selected].dive1
+      if (this.diveNumber === 2) this.id = this.plans[this.selected].dive2
+      if (this.diveNumber === 3) this.id = this.plans[this.selected].dive3
+      this.diveToSubmit = Object.assign({}, this.dives[this.id])
     }
   },
   mounted () {
-    if (this.diveNumber === 1) this.id = this.plans[this.selected].dive1
-    if (this.diveNumber === 2) this.id = this.plans[this.selected].dive2
-    if (this.diveNumber === 3) this.id = this.plans[this.selected].dive3
-    this.diveToSubmit = Object.assign({}, this.dives[this.id])
+    this.updateDiveToSubmit()
   },
   computed: {
-    ...mapState('diveplan', ['selected', 'plans', 'dives'])
+    ...mapState('diveplan', ['selected', 'plans', 'dives']),
+    plan: function () {
+      return this.plans[this.selected]
+    },
+    getWarnings () {
+      let string = null
+
+      if (this.diveToSubmit.safe) string = 'Safe Dive\n'
+      else string = 'Unsafe Dive, max bottom time at ' + this.diveToSubmit.ddepth + 'm' + ' is ' + this.diveToSubmit.result[0] + ' minutes diving from ' + ((this.diveToSubmit.spg === 'a') ? 'the surface' : 'pressure group ' + this.diveToSubmit.spg) + '.\n'
+      if (this.diveToSubmit.diveid > 1 && this.diveToSubmit.spg === 'a') string = string + 'Dive is unsafe because of previous dive\n'
+
+      return string
+    }
+  },
+  watch: {
+    diveToSubmit: function () {
+      if (!this.diveToSubmit.safe) {
+        console.log(this.diveToSubmit)
+        this.$q.notify({
+          message: this.getWarnings,
+          color: 'red'
+        })
+      }
+    }
   }
 }
 </script>

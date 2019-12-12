@@ -33,7 +33,7 @@ const state = {
       plan: 1000,
       id: 1000,
       bottomt: 0,
-      ddepth: 40,
+      ddepth: 0,
       diveid: 1,
       spg: 'a',
       fpg: 'a',
@@ -228,7 +228,6 @@ const actions = {
     commit('deletePlan')
   },
   setDive ({ commit, state, dispatch }, payload) {
-    console.log('set dive', payload)
     let dive = state.dives[payload.id]
     let maxbt = divet.maxBT(payload.spg, payload.ddepth)
     let result = [payload.time, payload.depth, payload.spg, 'a', 0, 1]
@@ -352,8 +351,7 @@ const getters = {
     if (plan.numdives >= 2) array.push(state.dives[plan.dive2])
     if (plan.numdives >= 3) array.push(state.dives[plan.dive3])
     return array
-  },
-  dive: state => diveId => state.dives[diveId]
+  }
 }
 
 export default {
