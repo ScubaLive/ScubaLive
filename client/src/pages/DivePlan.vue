@@ -154,7 +154,13 @@ export default {
       chart.push(0)
       chart.push(-Math.abs(this.dives[dive].ddepth))
       chart.push(-Math.abs(this.dives[dive].ddepth))
-      chart.push(0)
+      if (this.dives[dive].ssrequired === true) {
+        chart.push(-5)
+        chart.push(-5)
+        chart.push(0)
+      } else {
+        chart.push(0)
+      }
 
       return chart
     }
@@ -189,27 +195,68 @@ export default {
       let dive3 = null
       let previousDiveTime = null
       let previousDiveTime2 = null
+      const safetyStopAddedTime = 10
       labelArr.push(0)
       labelArr.push(0)
       labelArr.push(dive1.bottomt)
-      labelArr.push(dive1.bottomt)
+      if (dive1.ssrequired === true) {
+        labelArr.push(parseInt(dive1.bottomt) + 5)
+        labelArr.push(parseInt(dive1.bottomt) + 10)
+        labelArr.push(parseInt(dive1.bottomt) + 10)
+      } else {
+        labelArr.push(dive1.bottomt)
+      }
 
       if (this.plans[this.selected].dive2) {
         dive2 = this.dives[this.plans[this.selected].dive2]
         previousDiveTime = parseInt(dive1.bottomt)
-        labelArr.push(parseInt(dive1.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
-        labelArr.push(parseInt(dive1.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
-        labelArr.push(previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
-        labelArr.push(previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
-        previousDiveTime2 = previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval)
+        if (dive1.ssrequired === true) {
+          labelArr.push(parseInt(dive1.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval) + 10)
+          labelArr.push(parseInt(dive1.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval) + 10)
+          labelArr.push(previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval) + 10)
+        } else {
+          labelArr.push(parseInt(dive1.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
+          labelArr.push(parseInt(dive1.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
+          labelArr.push(previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
+        }
+        if (dive2.ssrequired === true) {
+          labelArr.push(previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval) + 10)
+          labelArr.push(previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval) + 15)
+          labelArr.push(previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval) + 15)
+          previousDiveTime2 = previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval) + 15
+        } else {
+          if (dive1.ssrequired === true) {
+            labelArr.push(previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval) + 10)
+            previousDiveTime2 = previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval) + 10
+          } else {
+            labelArr.push(previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval))
+            previousDiveTime2 = previousDiveTime + parseInt(dive2.bottomt) + parseInt(this.SIs[this.plans[this.selected].si1].interval)
+          }
+        }
       }
 
       if (this.plans[this.selected].dive3) {
         dive3 = this.dives[this.plans[this.selected].dive3]
-        labelArr.push(previousDiveTime2 + parseInt(this.SIs[this.plans[this.selected].si2].interval))
-        labelArr.push(previousDiveTime2 + parseInt(this.SIs[this.plans[this.selected].si2].interval))
-        labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval))
-        labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval))
+        if (dive1.ssrequired === true && dive2.ssrequired === true) {
+          labelArr.push(previousDiveTime2 + parseInt(this.SIs[this.plans[this.selected].si2].interval) + 20)
+          labelArr.push(previousDiveTime2 + parseInt(this.SIs[this.plans[this.selected].si2].interval) + 20)
+          labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval) + 20)
+          labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval) + 25)
+          labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval) + 30)
+          labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval) + 30)
+        } else if (dive1.ssrequired === true || dive2.ssrequired === true) {
+          labelArr.push(previousDiveTime2 + parseInt(this.SIs[this.plans[this.selected].si2].interval) + 10)
+          labelArr.push(previousDiveTime2 + parseInt(this.SIs[this.plans[this.selected].si2].interval) + 10)
+          labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval) + 10)
+          labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval) + 15)
+          labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval) + 20)
+          labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval) + 20)
+        } else {
+          labelArr.push(previousDiveTime2 + parseInt(this.SIs[this.plans[this.selected].si2].interval))
+          labelArr.push(previousDiveTime2 + parseInt(this.SIs[this.plans[this.selected].si2].interval))
+          labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval))
+          labelArr.push(previousDiveTime2 + parseInt(dive3.bottomt) + parseInt(this.SIs[this.plans[this.selected].si2].interval))
+        }
       }
 
       return labelArr

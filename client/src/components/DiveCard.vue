@@ -39,6 +39,22 @@
           </q-icon>
         </template>
       </q-input>
+      <q-toggle
+        v-model="diveToSubmit.ssrequired"
+        checked-icon="check"
+        color="green"
+        unchecked-icon="clear"
+        label="Safety Stop Required "
+        disable
+        keep-color
+        style="color: #404040"
+      >
+        <q-icon name="info" style="font-size: 24px; padding-bottom: 3px">
+          <q-tooltip :delay="500" anchor="center right" self="center left" :offset="[10, 10]">
+            Stop at 5 meter depth for 5 min while surfacing.
+          </q-tooltip>
+        </q-icon>
+      </q-toggle>
     </q-card>
 </template>
 
