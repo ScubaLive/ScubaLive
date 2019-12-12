@@ -1,6 +1,6 @@
 <template>
     <q-card class="my-card" :active="safe" active-class="bg-red-1 text-grey-8">
-      <q-card-section :class="[diveToSubmit.safe ? 'bg-teal' : 'bg-red', 'text-white']">
+      <q-card-section :class="[safe ? 'bg-teal' : 'bg-red', 'text-white']">
         <div class="text-h6">Dive #{{diveNumber}}</div>
       </q-card-section>
       <q-input
@@ -93,17 +93,29 @@ export default {
       if (this.diveToSubmit.diveid > 1 && this.diveToSubmit.spg === 'a') string = string + 'Dive is unsafe because of previous dive\n'
 
       return string
+    },
+    watchSafe () {
+      let dive = 0
+      if (this.diveNumber === 1) dive = this.plans[this.selected].dive1
+      if (this.diveNumber === 2) dive = this.plans[this.selected].dive2
+      if (this.diveNumber === 3) dive = this.plans[this.selected].dive3
+      return this.dives[dive].safe
     }
   },
   watch: {
     diveToSubmit: function () {
       if (!this.diveToSubmit.safe) {
-        console.log(this.diveToSubmit)
         this.$q.notify({
           message: this.getWarnings,
           color: 'red'
         })
       }
+    },
+    watchSafe () {
+      this.safe = this.dives[this.id].safe
+    },
+    'selected' () {
+      this.updateDiveToSubmit()
     }
   }
 }

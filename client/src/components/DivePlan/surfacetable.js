@@ -54,8 +54,8 @@ class SurfaceTable {
       let index = (start - end) * 2
 
       if (index >= 0) {
-        surfTime[0] = this.padi[start][index]
-        surfTime[1] = this.padi[start][index + 1]
+        surfTime[0] = SurfaceTable.padi[start][index]
+        surfTime[1] = SurfaceTable.padi[start][index + 1]
       }
     }
 

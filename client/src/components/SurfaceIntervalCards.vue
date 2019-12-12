@@ -51,15 +51,24 @@ export default {
         pack.interval = -1
       }
       this.updateSI(pack)
+    },
+    updateSItoSubmit () {
+      if (this.diveNumber === 1) this.id = this.plans[this.selected].si1
+      if (this.diveNumber === 2) this.id = this.plans[this.selected].si2
+      this.siToSubmit = Object.assign({}, this.SIs[this.id])
     }
   },
   mounted () {
-    if (this.diveNumber === 1) this.id = this.plans[this.selected].si1
-    if (this.diveNumber === 2) this.id = this.plans[this.selected].si2
-    this.siToSubmit = Object.assign({}, this.SIs[this.id])
+    this.updateSItoSubmit()
   },
   computed: {
-    ...mapState('diveplan', ['selected', 'plans', 'SIs', 'dives'])
+    ...mapState('diveplan', ['selected', 'plans', 'SIs', 'dives']),
+    watchInterval () {
+      let si = 0
+      if (this.diveNumber === 1) si = this.plans[this.selected].si1
+      if (this.diveNumber === 2) si = this.plans[this.selected].si2
+      return this.SIs[si].interval
+    }
   },
   watch: {
     'accept' (val) {
@@ -68,6 +77,12 @@ export default {
         payload.interval = -1
         this.updateTime(payload)
       }
+    },
+    watchInterval () {
+      this.siToSubmit = Object.assign({}, this.SIs[this.id])
+    },
+    'selected' () {
+      this.updateSItoSubmit()
     }
   }
 }

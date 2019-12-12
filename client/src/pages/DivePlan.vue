@@ -145,7 +145,7 @@ export default {
   },
   computed: {
     ...mapState('diveplan', ['selected', 'plans', 'dives', 'SIs']),
-    ...mapGetters('diveplan', ['plan', 'dive']),
+    ...mapGetters('diveplan', ['plan']),
     values: function () {
       let chart = []
 
