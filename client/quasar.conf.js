@@ -86,7 +86,6 @@ module.exports = function (ctx) {
       scopeHoisting: true,
       'no-unused-vars': 'off',
       'no-empty-pattern': 'off',
-      'no-console': 'off',
       vueCompiler: true,
       // vueRouterMode: 'history',
       // showProgress: false,

@@ -15,7 +15,7 @@
 
       <q-card-actions vertical align="center">
         <!--Use routervue js Navigation guard "beforeEnter" so it checks route-->
-        <q-btn :to="{name: 'DivePlan'}" @click="onAccept" color="primary" label="Get Started"/>
+        <q-btn :to="{name: 'DivePlan'}" color="primary" label="Get Started"/>
       </q-card-actions>
     </q-card>
 
@@ -23,15 +23,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 export default {
-  name: 'LandingPage',
-  methods: {
-    ...mapActions('auth', ['acceptUser']),
-    onAccept () {
-      this.acceptUser()
-    }
-  }
+  name: 'LandingPage'
 }
 </script>
 
