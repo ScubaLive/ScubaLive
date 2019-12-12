@@ -28,14 +28,16 @@ const actions = {
   logoutUser () {
     firebaseAuth.signOut()
   },
-  handleAuthStateChange ({ commit }) {
+  handleAuthStateChange ({ commit, dispatch }) {
     firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
         commit('setLoggedIn', true)
         this.$router.push('/dive-plan').catch(err => { console.log(err) })
+        dispatch('diveplan/fbReadData', null, { root: true })
       } else {
         commit('setLoggedIn', false)
         this.$router.replace('/auth').catch(err => { console.log(err) })
+        dispatch('diveplan/fbReadDefault', null, { root: true })
       }
     })
   }

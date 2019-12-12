@@ -54,6 +54,7 @@
       </q-btn-dropdown>
     </div>
     <div class="row full-width row wrap justify-start items-start content-start">
+      <q-btn color="primary" @click="saveThis" icon-right="delete" label="Save" size="sm"/>
       <q-btn color="primary" @click="deleteThis" icon-right="delete" label="Delete" size="sm"/>
     </div>
     <div class="q-pa-md">
@@ -107,12 +108,27 @@ export default {
     }
   },
   methods: {
-    ...mapActions('diveplan', ['setName', 'setNum', 'deletePlan']),
+    ...mapActions('diveplan', ['setName', 'setNum', 'deletePlan', 'fbWriteData']),
     onItemClick () {
       console.log('Clicked on an Item')
     },
     updateName (name) {
       this.setName({ id: this.plans[this.selected].id, name: name })
+    },
+    saveThis () {
+      if (this.loggedIn) {
+        this.fbWriteData()
+        this.$q.notify({
+          message: 'Dive Plan Saved',
+          color: 'green',
+          position: 'top'
+        })
+      } else {
+        this.$q.notify({
+          message: 'Please Log In to Save Plans',
+          color: 'red'
+        })
+      }
     },
     updateNum (num) {
       this.setNum(num)
@@ -144,6 +160,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('auth', ['loggedIn']),
     ...mapState('diveplan', ['selected', 'plans', 'dives', 'SIs']),
     ...mapGetters('diveplan', ['plan']),
     values: function () {

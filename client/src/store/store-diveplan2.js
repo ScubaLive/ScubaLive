@@ -1,26 +1,14 @@
-import { surfacet, divet } from '../boot/firebase'
+import { surfacet, divet, firebaseDb, firebaseAuth } from '../boot/firebase'
 import Vue from 'vue'
 import { uid } from 'quasar'
 
 const state = {
-  planid: [1000, 1001],
   plans: {
     1000: {
       id: 1000,
       name: 'New Plan',
       numdives: 1,
       dive1: 1000,
-      dive2: null,
-      dive3: null,
-      si1: null,
-      si2: null,
-      safe: true
-    },
-    1001: {
-      id: 1001,
-      name: 'New Plan',
-      numdives: 1,
-      dive1: 1001,
       dive2: null,
       dive3: null,
       si1: null,
@@ -40,25 +28,13 @@ const state = {
       ssrequired: false,
       safe: true,
       result: null
-    },
-    1001: {
-      plan: 1001,
-      id: 1001,
-      bottomt: 0,
-      ddepth: 0,
-      diveid: 1,
-      spg: 'a',
-      fpg: 'a',
-      ssrequired: false,
-      safe: true,
-      result: null
     }
   },
   SIs: {
-
+    1: 'empty'
   },
-  cplan: 1001,
-  cdive: 1001,
+  cplan: 1000,
+  cdive: 1000,
   cSI: 999,
   selected: 1000
 
@@ -70,6 +46,27 @@ const mutations = {
   },
   setDiveResult (state, payload) {
     Vue.set(state.dives[payload.id], 'result', payload.result)
+  },
+  downloadPlan (state, plan) {
+
+  },
+  downloadDive (state, dive) {
+
+  },
+  downloadSI (state, SI) {
+
+  },
+  resetState (state) {
+    state = {}
+  },
+  downloadState (state, payload) {
+    Vue.set(state, 'plans', payload.plans)
+    Vue.set(state, 'cplan', payload.cplan)
+    Vue.set(state, 'cdive', payload.cdive)
+    Vue.set(state, 'dives', payload.dives)
+    Vue.set(state, 'SIs', payload.SIs)
+    Vue.set(state, 'cSI', payload.cSI)
+    Vue.set(state, 'selected', payload.selected)
   },
   newPlan (state) {
     let num = state.cplan + 1
@@ -224,8 +221,13 @@ const actions = {
       console.log('Invalid diveid')
     }
   },
-  deletePlan ({ commit }) {
+  deletePlan ({ commit, state }) {
     commit('deletePlan')
+    let userID = firebaseAuth.currentUser
+    if (userID !== null) {
+      let userPlans = firebaseDb.ref(userID + '/plans/' + state.selected)
+      userPlans.delete()
+    }
   },
   setDive ({ commit, state, dispatch }, payload) {
     let dive = state.dives[payload.id]
@@ -338,6 +340,33 @@ const actions = {
   newPlan ({ commit }) {
     commit('newPlan')
     commit('newDive', 1)
+  },
+  fbReadData ({ commit, dispatch }) {
+    let userID = firebaseAuth.currentUser.uid
+    let userPlans = firebaseDb.ref(userID + '/')
+
+    userPlans.once('value', snapshot => {
+      let plans = snapshot.val()
+      if (plans !== null) {
+        commit('downloadState', plans)
+      } else {
+        dispatch('fbWriteData')
+      }
+    })
+  },
+  fbReadDefault ({ commit }) {
+    let userPlans = firebaseDb.ref('1/')
+    userPlans.once('value', snapshot => {
+      let plans = snapshot.val()
+      commit('downloadState', plans)
+    })
+  },
+  fbWriteData ({ commit, state }) {
+    let userID = firebaseAuth.currentUser.uid
+    if (userID !== null) {
+      let userPlans = firebaseDb.ref(userID + '/')
+      userPlans.set(state)
+    }
   }
 }
 
