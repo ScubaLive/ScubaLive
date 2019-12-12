@@ -139,6 +139,11 @@ const mutations = {
     Vue.set(state.SIs, num, pack)
     state.cSI++
   },
+  deletePlan (state) {
+    Vue.delete(state.plans, state.selected)
+    let keys = Object.keys(state.plans)
+    Vue.set(state, 'selected', keys[0])
+  },
   setDiveFPG (state, payload) {
     Vue.set(state.dives[payload.id], 'fpg', payload.fpg)
   },
@@ -218,6 +223,9 @@ const actions = {
     } else {
       console.log('Invalid diveid')
     }
+  },
+  deletePlan ({ commit }) {
+    commit('deletePlan')
   },
   setDive ({ commit, state, dispatch }, payload) {
     console.log('set dive', payload)

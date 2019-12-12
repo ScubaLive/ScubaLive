@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-sm bg-grey-10 text-white">
+  <div class="q-pa-sm bg-grey-10 text-white" v-if="hasPlan">
     <div class="full-width row wrap justify-start items-start content-start q-gutter-sm">
       <q-input
         standout
@@ -54,8 +54,7 @@
       </q-btn-dropdown>
     </div>
     <div class="row full-width row wrap justify-start items-start content-start">
-      <q-btn v-on:click="save" color="primary" icon-right="save" label="Save" size="sm"/>
-      <q-btn color="primary" icon-right="delete" label="Delete" size="sm"/>
+      <q-btn color="primary" @click="deleteThis" icon-right="delete" label="Delete" size="sm"/>
     </div>
     <div class="q-pa-md">
         <div class="q-col-gutter-md fit row wrap justify-center items-start content-start">
@@ -86,6 +85,9 @@
         <guideline :tooltip-y="true"></guideline>
     </graph-area>
   </div>
+  <div v-else class="absolute-center text-black">
+    Please Create A New Plan
+  </div>
 </template>
 
 <script>
@@ -100,11 +102,12 @@ export default {
     return {
       planName: 'Dive1',
       accept: false,
+      hasPlan: true,
       planToSubmit: {}
     }
   },
   methods: {
-    ...mapActions('diveplan', ['setName', 'setNum']),
+    ...mapActions('diveplan', ['setName', 'setNum', 'deletePlan']),
     onItemClick () {
       console.log('Clicked on an Item')
     },
@@ -113,6 +116,10 @@ export default {
     },
     updateNum (num) {
       this.setNum(num)
+    },
+    deleteThis () {
+      this.deletePlan()
+      if (this.selected === undefined) this.hasPlan = false
     },
     onClickButton (event) {
       this.$emit('clicked', 'someValue')
@@ -194,6 +201,7 @@ export default {
   watch: {
     'selected' (val) {
       this.planToSubmit = Object.assign({}, this.plans[this.selected])
+      if (this.selected !== undefined) this.hasPlan = true
     }
 
   }
