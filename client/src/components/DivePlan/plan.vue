@@ -33,6 +33,7 @@ export default {
     ...mapActions('diveplan', ['setSelect']),
     selectIt () {
       this.setSelect(this.id)
+      this.$router.push('/dive-plan').catch(err => { console.log(err) })
     }
   },
   computed: {

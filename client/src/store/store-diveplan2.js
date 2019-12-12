@@ -218,7 +218,6 @@ const actions = {
       if (si !== null) dispatch('updateInterval', { id: si, interval: null })
       commit('updateSafe')
     } else {
-      console.log('Invalid diveid')
     }
   },
   deletePlan ({ commit, state }) {
@@ -271,7 +270,7 @@ const actions = {
     let si = state.SIs[payload.id]
     if (payload.interval !== si.interval || payload.spg !== si.spg) {
       pack.spg = state.dives[si.sdive].fpg
-      console.log('updatefpg')
+
       pack.fpg = surfacet.getEndingPressureGroup(pack.spg, payload.interval)
     }
     commit('setSI', pack)
@@ -281,7 +280,6 @@ const actions = {
     let tsi = state.SIs[payload.id]
     let pack = Object.assign({}, payload)
     pack.interval = surfacet.getSurfaceIntervalTime(state.dives[tsi.sdive].fpg, divet.minPG(state.dives[tsi.fdive].bottomt, state.dives[state.SIs[payload.id].fdive].ddepth))[0]
-    console.log('********' + pack.interval + '/////' + state.dives[tsi.sdive].fpg + '////' + divet.minPG(state.dives[tsi.fdive].bottomt, state.dives[state.SIs[payload.id].fdive].ddepth))
     dispatch('updateInterval', pack)
   },
   updateSI ({ commit, state, dispatch }, payload) {
@@ -295,7 +293,6 @@ const actions = {
         dispatch('updateInterval', pack)
       }
     } else {
-      console.log('Invalid siid')
     }
   },
   setName ({ commit }, payload) {
@@ -334,7 +331,6 @@ const actions = {
         commit('updateSafe')
       }
     } else {
-      console.log('Invalid number of dives')
     }
   },
   newPlan ({ commit }) {
