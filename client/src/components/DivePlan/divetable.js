@@ -120,26 +120,26 @@ export default class DiveTable {
     return DiveTable.indexToPG(DiveTable.timeIndex(tdiff, dindex) - 1)
   }
 
-  maxDepth (time, spg) {
-    let indext = DiveTable.pgToIndex(spg)
-    let indexd = 11
-    // skip depths in which dives from spg aren't allowed
-    while (DiveTable.divet[27][indexd] + 4 < indext) {
-      indexd--
-    }
-    // find depth which allows for BT at certain spg
-    if (spg !== 'a') {
-      while (DiveTable.divet[DiveTable.divet[27][indexd] + 4][indexd] > time + DiveTable.divet[indext][indexd]) {
-        indexd--
-      }
-    } else {
-      while (DiveTable.divet[DiveTable.divet[27][indexd] + 4][indexd] > time) {
-        indexd--
-      }
-    }
-
-    return DiveTable.divet[0][indexd]
-  }
+  // maxDepth (time, spg) {
+  //   let indext = DiveTable.pgToIndex(spg)
+  //   let indexd = 11
+  //   // skip depths in which dives from spg aren't allowed
+  //   while (DiveTable.divet[27][indexd] + 4 < indext) {
+  //     indexd--
+  //   }
+  //   // find depth which allows for BT at certain spg
+  //   if (spg !== 'a') {
+  //     while (DiveTable.divet[DiveTable.divet[27][indexd] + 4][indexd] > time + DiveTable.divet[indext][indexd]) {
+  //       indexd--
+  //     }
+  //   } else {
+  //     while (DiveTable.divet[DiveTable.divet[27][indexd] + 4][indexd] > time) {
+  //       indexd--
+  //     }
+  //   }
+  //
+  //   return DiveTable.divet[0][indexd]
+  // }
 
   ssTest (finalpg, depth) {
     let ssrequired = false

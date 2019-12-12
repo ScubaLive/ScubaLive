@@ -1,12 +1,16 @@
 import { firebaseAuth } from '../boot/firebase'
 
 const state = {
-  loggedIn: false
+  loggedIn: false,
+  accepted: false
 }
 
 const mutations = {
   setLoggedIn (state, value) {
     state.loggedIn = value
+  },
+  accept (state) {
+    state.accepted = true
   }
 }
 
@@ -25,10 +29,14 @@ const actions = {
       console.log('error.message: ', error.message)
     })
   },
+  acceptUser ({ commit }) {
+    commit('accept')
+  },
   logoutUser () {
     firebaseAuth.signOut()
   },
-  handleAuthStateChange ({ commit, dispatch }) {
+
+  handleAuthStateChange ({ commit, dispatch, state }) {
     firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
         commit('setLoggedIn', true)
@@ -36,7 +44,9 @@ const actions = {
         dispatch('diveplan/fbReadData', null, { root: true })
       } else {
         commit('setLoggedIn', false)
-        this.$router.replace('/auth').catch(err => { console.log(err) })
+        if (state.accepted === true) {
+          this.$router.replace('/auth').catch(err => { console.log(err) })
+        }
         dispatch('diveplan/fbReadDefault', null, { root: true })
       }
     })

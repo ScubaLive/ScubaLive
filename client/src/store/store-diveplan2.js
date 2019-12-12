@@ -9,10 +9,6 @@ const state = {
       name: 'New Plan',
       numdives: 1,
       dive1: 1000,
-      dive2: null,
-      dive3: null,
-      si1: null,
-      si2: null,
       safe: true
     }
   },
@@ -26,12 +22,13 @@ const state = {
       spg: 'a',
       fpg: 'a',
       ssrequired: false,
-      safe: true,
-      result: null
+      safe: true
     }
   },
   SIs: {
-    1: 'empty'
+    999: {
+      name: 'empty'
+    }
   },
   cplan: 1000,
   cdive: 1000,
@@ -74,11 +71,6 @@ const mutations = {
       id: num,
       name: 'New Plan',
       numdives: 1,
-      dive1: null,
-      dive2: null,
-      dive3: null,
-      si1: null,
-      si2: null,
       safe: true
     }
     Vue.set(state.plans, num, payload)
@@ -110,8 +102,7 @@ const mutations = {
       spg: startpg,
       fpg: startpg,
       ssrequired: false,
-      safe: true,
-      result: null
+      safe: true
     }
     Vue.set(state.dives, num, payload)
     state.cdive++
@@ -215,7 +206,10 @@ const actions = {
         pack.spg = state.SIs[plan.si2].fpg
       }
       dispatch('setDive', pack)
-      if (si !== null) dispatch('updateInterval', { id: si, interval: null })
+      if (si !== null) {
+        let pack2 = state.SIs[si]
+        dispatch('updateInterval', pack2)
+      }
       commit('updateSafe')
     } else {
       console.log('Invalid diveid')
@@ -242,10 +236,10 @@ const actions = {
     commit('setDiveBT', payload)
     result[2] = payload.spg
 
-    if (maxbt < payload.time || (payload.diveid > 1 && payload.spg === 'a')) {
+    if (maxbt < payload.time) {
       commit('setDiveSafe', { id: payload.id, safe: false })
       result[0] = maxbt
-      result[1] = divet.maxDepth(payload.time, payload.spg)
+      // result[1] = divet.maxDepth(payload.time, payload.spg)
       result[5] = 0
       // find new spg if possible
       if (payload.spg !== 'a') {
@@ -269,11 +263,8 @@ const actions = {
   updateInterval ({ commit, state, dispatch }, payload) {
     let pack = Object.assign({}, payload)
     let si = state.SIs[payload.id]
-    if (payload.interval !== si.interval || payload.spg !== si.spg) {
-      pack.spg = state.dives[si.sdive].fpg
-      console.log('updatefpg')
-      pack.fpg = surfacet.getEndingPressureGroup(pack.spg, payload.interval)
-    }
+    pack.spg = state.dives[si.sdive].fpg
+    pack.fpg = surfacet.getEndingPressureGroup(pack.spg, payload.interval)
     commit('setSI', pack)
     dispatch('setDive', { id: si.fdive, time: null, depth: null, spg: pack.fpg })
   },
@@ -290,7 +281,7 @@ const actions = {
     if (payload.siid === 1 || payload.siid === 2) {
       if (payload.interval < 0) dispatch('setMinInterval', payload)
       else dispatch('updateInterval', pack)
-      if (payload.siid === 1 && plan.si2 !== null) {
+      if (payload.siid === 1 && plan.si2 !== undefined) {
         pack = Object.assign({}, state.SIs[plan.si2])
         dispatch('updateInterval', pack)
       }
@@ -315,13 +306,13 @@ const actions = {
         while (diff > 0) {
           commit('setNum', parseInt(current) + 1)
           if (plan.numdives === 2) {
-            if (plan.dive2 === null) {
+            if (plan.dive2 === undefined) {
               commit('newSI', { id: 1, sdive: plan.dive1, fdive: state.cdive + 1 })
               commit('newDive', 2)
             }
           }
           if (plan.numdives === 3) {
-            if (plan.dive3 == null) {
+            if (plan.dive3 === undefined) {
               commit('newSI', { id: 2, sdive: plan.dive2, fdive: state.cdive + 1 })
               commit('newDive', 3)
             }
