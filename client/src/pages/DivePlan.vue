@@ -80,7 +80,7 @@
         :axisFullMode="true"
         :values="values"
     >
-        <note :text="'Area Chart'"></note>
+        <note :text="'Dive Plan Layout'"></note>
         <legends :names="[ 'Dive Plan' ]"></legends>
         <guideline :tooltip-y="true"></guideline>
     </graph-area>
