@@ -18,7 +18,7 @@
     "firebase": "^7.5.0",
     "quasar": "^1.0.0",
     "sass": "^1.23.7",
-    "serialize-javascript": "^2.1.1",
+    "serialize-javascript": "^3.1.0",
     "vue-graph": "^0.8.7"
   },
   "devDependencies": {
